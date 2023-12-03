@@ -691,27 +691,79 @@ class Sale extends StatelessWidget {
     int index = 1;
     int sumNumber = 0;
     List<ModelPDf> user = [];
-    for (BasketModel i in databaseProvider.baskets
-        .where((element) => element.idBasket == idBasket)
-        .toList()) {
-      user.add(ModelPDf(
-          index: index++,
-          note: i.note,
-          price: i.price,
-          subject: i.nameProduct,
-          total: i.totalPrice,
-          theNumber: i.requiredQuantity));
-      sumNumber += i.requiredQuantity;
-    }
+    if (!isInInvoise) {
+      for (BasketModel i in databaseProvider.baskets
+          .where((element) => element.idBasket == idBasket)
+          .toList()) {
+        user.add(ModelPDf(
+            index: index++,
+            note: i.note,
+            price: i.price,
+            subject: i.nameProduct,
+            total: i.totalPrice,
+            theNumber: i.requiredQuantity));
+        sumNumber += i.requiredQuantity;
+      }
 
-    final pdfFile = await PdfApi.generateTaple(
-        printDataPdf: printDataPdf,
-        indexOfInvoice: '1',
-        user: user,
-        totalPrice: totalPrice,
-        totalCont: sumNumber);
-    if (isInInvoise) {
-      deleteAllBaskets(context, deleteItems: false);
+      final pdfFile = await PdfApi.generateTaple(
+          printDataPdf: printDataPdf,
+          indexOfInvoice: '1',
+          user: user,
+          totalPrice: totalPrice,
+          totalCont: sumNumber);
+      if (isInInvoise) {
+        deleteAllBaskets(context, deleteItems: true);
+        await Provider.of<DatabaseProvider>(context, listen: false)
+            .deleteAllBasketItems(idBasket);
+      }
+    } else {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('بيع مباشر'),
+            content: const Text('هل انت متأكد من بيع القائمة بشكل مباشر؟'),
+            actions: [
+              ElevatedButton(
+                onPressed: () async {
+                  for (BasketModel i in databaseProvider.baskets
+                      .where((element) => element.idBasket == idBasket)
+                      .toList()) {
+                    user.add(ModelPDf(
+                        index: index++,
+                        note: i.note,
+                        price: i.price,
+                        subject: i.nameProduct,
+                        total: i.totalPrice,
+                        theNumber: i.requiredQuantity));
+                    sumNumber += i.requiredQuantity;
+                  }
+
+                  final pdfFile = await PdfApi.generateTaple(
+                      printDataPdf: printDataPdf,
+                      indexOfInvoice: '1',
+                      user: user,
+                      totalPrice: totalPrice,
+                      totalCont: sumNumber);
+                  if (isInInvoise) {
+                    // deleteAllBaskets(context, deleteItems: true);
+                    await Provider.of<DatabaseProvider>(context, listen: false)
+                        .deleteAllBasketItems(idBasket);
+                  }
+                  Navigator.of(context).pop();
+                },
+                child: const Text('نعم'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('لا'),
+              ),
+            ],
+          );
+        },
+      );
     }
     // PdfApi.openFile(pdfFile);
   }

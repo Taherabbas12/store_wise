@@ -1,3 +1,5 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
@@ -55,6 +57,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
+          // scaffoldBackgroundColor: Colors.black,
           useMaterial3: true,
           appBarTheme: AppBarTheme(
               backgroundColor: colorPrimary,
