@@ -81,7 +81,7 @@ class MyApp extends StatelessWidget {
         'Accounnts': (context) => Accounnts(),
         'AddAccount': (context) => AddAccount(),
         'ReportScreen': (context) => const ReportScreen(),
-        'SettingScreen': (context) => const SettingScreen(),
+        'SettingScreen': (context) => SettingScreen(),
       },
     );
   }

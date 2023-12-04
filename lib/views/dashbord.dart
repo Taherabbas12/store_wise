@@ -20,7 +20,7 @@ class DashBord extends StatelessWidget {
     DataView(
       name: " قائمة ارجاع بيع",
       url: "Sale",
-      image: 'assets/bord_images/klipartz.com (6).png',
+      image: 'assets/bord_images/klipartz.com (9).png',
     ),
     DataView(
         name: "اضافة منتجات وعرضها",
@@ -34,12 +34,17 @@ class DashBord extends StatelessWidget {
     DataView(
       name: "الديون والحسابات",
       url: "Accounnts",
-      image: 'assets/bord_images/klipartz.com (5).png',
+      image: 'assets/bord_images/—Pngtree—vector loan icon_4049350.png',
     ),
     DataView(
       name: "تقارير",
       url: "ReportScreen",
       image: 'assets/bord_images/klipartz.com (7).png',
+    ),
+    DataView(
+      name: "الاعدادات",
+      url: "SettingScreen",
+      image: 'assets/bord_images/klipartz.com (8).png',
     ),
   ];
 
@@ -63,18 +68,18 @@ class DashBord extends StatelessWidget {
                   Navigator.pushNamed(context, views[index].url);
                 },
                 hoverColor: colorHover,
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(30),
                 child: Container(
                   margin: const EdgeInsets.all(4),
                   padding: const EdgeInsets.all(10),
-                  width: 250,
-                  height: 250,
+                  width: 200,
+                  height: 200,
                   decoration: BoxDecoration(
                     color: colorPrimary,
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(30),
                   ),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(30),
                     child: BackdropFilter(
                       filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
                       child: Container(
@@ -82,7 +87,7 @@ class DashBord extends StatelessWidget {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Image.asset(views[index].image, width: 150),
+                            Image.asset(views[index].image, width: 100),
                             Text(
                               views[index].name,
                               textAlign: TextAlign.center,
