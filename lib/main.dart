@@ -15,6 +15,7 @@ import 'views/items/view_items.dart';
 import 'views/reports/reports_screen.dart';
 import 'views/sale/sale.dart';
 import 'views/settings/setting_screen.dart';
+import 'views/show_menu/show_menu_screen.dart';
 
 String localShard = 'Microsoft';
 String localShardPath = 'C:\\Users\\Public\\Documents';
@@ -44,6 +45,7 @@ Future<void> main() async {
 
   runApp(
     ChangeNotifierProvider(
+      lazy: true,
       create: (context) => DatabaseProvider(),
       child: const MyApp(),
     ),
@@ -80,7 +82,7 @@ class MyApp extends StatelessWidget {
         'Sale': (context) => Sale(),
         'Accounnts': (context) => Accounnts(),
         'AddAccount': (context) => AddAccount(),
-        'ReportScreen': (context) => const ReportScreen(),
+        'ReportScreen': (context) => ReportScreen(),
         'SettingScreen': (context) => SettingScreen(),
       },
     );

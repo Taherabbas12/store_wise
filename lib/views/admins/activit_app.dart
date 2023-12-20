@@ -1,7 +1,6 @@
 // ignore_for_file: must_be_immutable, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
-import 'package:flutter_validator/flutter_validator.dart';
 import 'package:get_storage/get_storage.dart';
 
 import '../../constants/colors_cos.dart';
@@ -17,6 +16,7 @@ class ActivitApp extends StatefulWidget {
 class _ActivitAppState extends State<ActivitApp> {
   TextEditingController controller = TextEditingController(text: '');
   final _key = GlobalKey<FormState>();
+
   String activatea = 'pdofasfihaspuoqhf9pqoiu218924i1liuwafh01972209pi';
   int stateCont = 0;
   @override

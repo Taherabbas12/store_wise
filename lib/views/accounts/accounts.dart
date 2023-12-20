@@ -146,16 +146,13 @@ class Accounnts extends StatelessWidget {
             )
           ],
         ),
-        body: Container(
-          alignment: Alignment.topCenter,
-          child: buildDataTable(
-            databaseProvider.accounts
-                .where((element) =>
-                    element.name.contains(searchController.text.trim()))
-                .toList(),
-            context,
-            databaseProvider,
-          ),
+        body: buildDataTable(
+          databaseProvider.accounts
+              .where((element) =>
+                  element.name.contains(searchController.text.trim()))
+              .toList(),
+          context,
+          databaseProvider,
         ));
   }
 
@@ -163,86 +160,95 @@ class Accounnts extends StatelessWidget {
       DatabaseProvider databaseProvider) {
     bool isBlackRow = false; // متغير لتبديل لون الصفوف
 
-    return SizedBox(
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: DataTable(
-          columnSpacing: MediaQuery.sizeOf(context).width * 0.08,
-          dataRowMaxHeight: 60,
-          headingRowHeight: 60,
-          columns: const [
-            DataColumn(label: Text('ت', textAlign: TextAlign.center)),
-            DataColumn(label: Text('حضرة السيد', textAlign: TextAlign.center)),
-            DataColumn(label: Text('اسم المتجر', textAlign: TextAlign.center)),
-            DataColumn(label: Text('رقم الهاتف', textAlign: TextAlign.center)),
-            DataColumn(
-                label: Text('الدين', textAlign: TextAlign.center),
-                tooltip: 'اضغط على الحقل للتسديد الدين'),
-            DataColumn(
-                label: Text('تاريخ اخر تحديث\nd/m/y',
-                    textAlign: TextAlign.center)),
-            DataColumn(label: Text('')),
-          ],
-          rows: List.generate(account.length, (i) {
-            isBlackRow = !isBlackRow; // تبديل قيمة متغير اللون
-// استخدام الدالة:
-            DateTime storedDate = account[i].updateTimeDebts;
-            String timeDifference = calculateTimeDifference(storedDate);
-            return DataRow(
-              color: isBlackRow
-                  ? MaterialStateColor.resolveWith((_) => Colors.grey.shade300)
-                  : MaterialStateColor.resolveWith((_) => Colors.white),
-              cells: [
-                DataCell(Text((i + 1).toString(), textAlign: TextAlign.center)),
-                DataCell(Text(account[i].name, textAlign: TextAlign.center)),
-                DataCell(Text(account[i].storeName.toString(),
-                    textAlign: TextAlign.center)),
-                DataCell(Text(account[i].phoneNumber.toString(),
-                    textAlign: TextAlign.center)),
-                DataCell(CupertinoButton(
-                  onPressed: () {
-                    DateTime storedDate = account[i].updateTimeDebts;
-                    timeDifference2 = calculateTimeDifference(storedDate);
-                    debtslTemp = account[i];
-                    databaseProvider.getDebtsByClientId(account[i].id);
-                    _scaffoldKey.currentState?.openEndDrawer();
-                  },
-                  child: Text(formatCurrency(account[i].debts.toString()),
-                      textAlign: TextAlign.center),
-                )),
-                DataCell(Text(
-                    '${account[i].updateTimeDebts.day}/${account[i].updateTimeDebts.month}/${account[i].updateTimeDebts.year}\n منذ:$timeDifference',
-                    textAlign: TextAlign.center)),
-                DataCell(Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        showRowDetailsDialog(
-                            context, account[i], timeDifference);
-                      },
-                      child: const Icon(Icons.info, color: Colors.blue),
-                    ),
-                    const SizedBox(width: 8),
-                    InkWell(
-                      onTap: () {
-                        editProduct(context, account[i]);
-                      },
-                      child: const Icon(Icons.update, color: Colors.green),
-                    ),
-                    const SizedBox(width: 8),
-                    InkWell(
-                      onTap: () {
-                        deleteProduct(context, account[i]);
-                      },
-                      child: const Icon(Icons.delete, color: Colors.red),
-                    ),
-                  ],
-                )),
+    return SingleChildScrollView(
+      child: Row(
+        children: [
+          Expanded(
+            child: DataTable(
+              columnSpacing: MediaQuery.sizeOf(context).width * 0.08,
+              dataRowMaxHeight: 60,
+              headingRowHeight: 60,
+              columns: const [
+                DataColumn(label: Text('ت', textAlign: TextAlign.center)),
+                DataColumn(
+                    label: Text('حضرة السيد', textAlign: TextAlign.center)),
+                DataColumn(
+                    label: Text('اسم المتجر', textAlign: TextAlign.center)),
+                DataColumn(
+                    label: Text('رقم الهاتف', textAlign: TextAlign.center)),
+                DataColumn(
+                    label: Text('الدين', textAlign: TextAlign.center),
+                    tooltip: 'اضغط على الحقل للتسديد الدين'),
+                DataColumn(
+                    label: Text('تاريخ اخر تحديث\nd/m/y',
+                        textAlign: TextAlign.center)),
+                DataColumn(label: Text('')),
               ],
-            );
-          }),
-        ),
+              rows: List.generate(account.length, (i) {
+                isBlackRow = !isBlackRow; // تبديل قيمة متغير اللون
+                // استخدام الدالة:
+                DateTime storedDate = account[i].updateTimeDebts;
+                String timeDifference = calculateTimeDifference(storedDate);
+                return DataRow(
+                  color: isBlackRow
+                      ? MaterialStateColor.resolveWith(
+                          (_) => Colors.grey.shade300)
+                      : MaterialStateColor.resolveWith((_) => Colors.white),
+                  cells: [
+                    DataCell(
+                        Text((i + 1).toString(), textAlign: TextAlign.center)),
+                    DataCell(
+                        Text(account[i].name, textAlign: TextAlign.center)),
+                    DataCell(Text(account[i].storeName.toString(),
+                        textAlign: TextAlign.center)),
+                    DataCell(Text(account[i].phoneNumber.toString(),
+                        textAlign: TextAlign.center)),
+                    DataCell(CupertinoButton(
+                      onPressed: () {
+                        DateTime storedDate = account[i].updateTimeDebts;
+                        timeDifference2 = calculateTimeDifference(storedDate);
+                        debtslTemp = account[i];
+                        databaseProvider.getDebtsByClientId(account[i].id);
+                        _scaffoldKey.currentState?.openEndDrawer();
+                      },
+                      child: Text(formatCurrency(account[i].debts.toString()),
+                          textAlign: TextAlign.center),
+                    )),
+                    DataCell(Text(
+                        '${account[i].updateTimeDebts.day}/${account[i].updateTimeDebts.month}/${account[i].updateTimeDebts.year}\n منذ:$timeDifference',
+                        textAlign: TextAlign.center)),
+                    DataCell(Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            showRowDetailsDialog(
+                                context, account[i], timeDifference);
+                          },
+                          child: const Icon(Icons.info, color: Colors.blue),
+                        ),
+                        const SizedBox(width: 8),
+                        InkWell(
+                          onTap: () {
+                            editProduct(context, account[i]);
+                          },
+                          child: const Icon(Icons.update, color: Colors.green),
+                        ),
+                        const SizedBox(width: 8),
+                        InkWell(
+                          onTap: () {
+                            deleteProduct(context, account[i]);
+                          },
+                          child: const Icon(Icons.delete, color: Colors.red),
+                        ),
+                      ],
+                    )),
+                  ],
+                );
+              }),
+            ),
+          ),
+        ],
       ),
     );
   }

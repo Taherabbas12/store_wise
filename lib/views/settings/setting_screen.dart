@@ -15,7 +15,7 @@ class SettingScreen extends StatefulWidget {
 
 class _SettingScreenState extends State<SettingScreen> {
   List<ListMenue> listMenue = [
-    ListMenue('تعديل بيانات القائمة', const EditListInformation()),
+    ListMenue('تعديل بيانات القائمة', EditListInformation()),
     ListMenue('اضافة حساب', const AddAdmin()),
     ListMenue('ادارة الحسابات', const ManagmentAdmin()),
     ListMenue('تفضيلات التطبيق', const FavoritesApp()),

@@ -4,19 +4,22 @@ class SequenceModel {
   final int clientId;
 
   final int totalPrice;
-  final String updateTimeDebts;
+  final int profits;
+  final DateTime updateTimeDebts;
 
   SequenceModel({
     required this.clientId,
     required this.totalPrice,
     required this.updateTimeDebts,
+    required this.profits,
   });
 
   factory SequenceModel.fromMap(Map<String, dynamic> map) {
     return SequenceModel(
       clientId: map['clientId'],
       totalPrice: map['total_price'],
-      updateTimeDebts: map['updateTimeDebts'],
+      profits: map['profits'],
+      updateTimeDebts: DateTime.parse(map['updateTimeDebts']),
     );
   }
 
@@ -24,7 +27,8 @@ class SequenceModel {
     return {
       'clientId': clientId,
       'total_price': totalPrice,
-      'updateTimeDebts': updateTimeDebts,
+      'profits': profits,
+      'updateTimeDebts': updateTimeDebts.toString(),
     };
   }
 }

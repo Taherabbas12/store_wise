@@ -13,39 +13,33 @@ class DashBord extends StatelessWidget {
   DashBord({super.key});
   List<DataView> views = [
     DataView(
-      name: "قائمة بيع",
-      url: "Sale",
-      image: 'assets/bord_images/klipartz.com (1).png',
-    ),
+        name: "قائمة بيع",
+        url: "Sale",
+        image: 'assets/bord_images/klipartz.com (1).png'),
     DataView(
-      name: " قائمة ارجاع بيع",
-      url: "Sale",
-      image: 'assets/bord_images/klipartz.com (9).png',
-    ),
+        name: " قائمة ارجاع بيع",
+        url: "Sale",
+        image: 'assets/bord_images/klipartz.com (9).png'),
     DataView(
         name: "اضافة منتجات وعرضها",
         url: "ViewItems",
         image: 'assets/bord_images/klipartz.com (2).png'),
     DataView(
-      name: "اضافة زبون",
-      url: "AddAccount",
-      image: 'assets/bord_images/474626.png',
-    ),
+        name: "اضافة زبون",
+        url: "AddAccount",
+        image: 'assets/bord_images/474626.png'),
     DataView(
-      name: "الديون والحسابات",
-      url: "Accounnts",
-      image: 'assets/bord_images/—Pngtree—vector loan icon_4049350.png',
-    ),
+        name: "الديون والحسابات",
+        url: "Accounnts",
+        image: 'assets/bord_images/—Pngtree—vector loan icon_4049350.png'),
     DataView(
-      name: "تقارير",
-      url: "ReportScreen",
-      image: 'assets/bord_images/klipartz.com (7).png',
-    ),
+        name: "تقارير",
+        url: "ReportScreen",
+        image: 'assets/bord_images/klipartz.com (7).png'),
     DataView(
-      name: "الاعدادات",
-      url: "SettingScreen",
-      image: 'assets/bord_images/klipartz.com (8).png',
-    ),
+        name: "الاعدادات",
+        url: "SettingScreen",
+        image: 'assets/bord_images/klipartz.com (8).png'),
   ];
 
   @override
@@ -59,45 +53,49 @@ class DashBord extends StatelessWidget {
     return Scaffold(
       body: Center(
         child: SingleChildScrollView(
-          child: Wrap(
-            alignment: WrapAlignment.center,
-            children: List.generate(
-              views.length,
-              (index) => InkWell(
-                onTap: () {
-                  Navigator.pushNamed(context, views[index].url);
-                },
-                hoverColor: colorHover,
-                borderRadius: BorderRadius.circular(30),
-                child: Container(
-                  margin: const EdgeInsets.all(4),
-                  padding: const EdgeInsets.all(10),
-                  width: 200,
-                  height: 200,
-                  decoration: BoxDecoration(
-                    color: colorPrimary,
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(30),
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                      child: Container(
-                        color: Colors.transparent,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(views[index].image, width: 100),
-                            Text(
-                              views[index].name,
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+                horizontal: MediaQuery.sizeOf(context).width * 0.1),
+            child: Wrap(
+              alignment: WrapAlignment.center,
+              children: List.generate(
+                views.length,
+                (index) => InkWell(
+                  onTap: () {
+                    Navigator.pushNamed(context, views[index].url);
+                  },
+                  hoverColor: colorHover,
+                  borderRadius: BorderRadius.circular(30),
+                  child: Container(
+                    margin: const EdgeInsets.all(4),
+                    padding: const EdgeInsets.all(10),
+                    width: 200,
+                    height: 200,
+                    decoration: BoxDecoration(
+                      color: colorPrimary,
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(30),
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                        child: Container(
+                          color: Colors.transparent,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset(views[index].image, width: 100),
+                              Text(
+                                views[index].name,
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),

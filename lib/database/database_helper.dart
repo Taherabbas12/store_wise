@@ -31,12 +31,13 @@ class DatabaseProvider extends ChangeNotifier {
   List<AccountModel> _accounts = [];
   List<DebtModel> debts = [];
   List<BasketModel> baskets = [];
+
   List<AdminsModel> admins = []; // قائمة الإداريين
   List<EventsModel> events = []; // قائمة الأحداث
   List<SequenceModel> sequence = []; // قائمة الأحداث
   Future<void> initializeDatabase() async {
     _database = await openDatabase(
-      join(await getDatabasesPath(), 'databaseT12.db'),
+      join(await getDatabasesPath(), 'databaseT13.db'),
       onCreate: (db, version) {
         // الادارة
         db.execute(
@@ -56,7 +57,7 @@ class DatabaseProvider extends ChangeNotifier {
         );
         // السله
         db.execute(
-          'CREATE TABLE basket(id INTEGER PRIMARY KEY AUTOINCREMENT,id_basket INTEGER, nameProduct TEXT, requiredQuantity INTEGER, price INTEGER, totalPrice INTEGER, note TEXT)',
+          'CREATE TABLE basket(id INTEGER PRIMARY KEY AUTOINCREMENT,id_basket INTEGER, nameProduct TEXT, requiredQuantity INTEGER, price INTEGER, totalPrice INTEGER, note TEXT,totalPriceProfits INTEGER)',
         );
         // قائمة المستخدم
         db.execute(
@@ -64,13 +65,13 @@ class DatabaseProvider extends ChangeNotifier {
         );
         // رقم القائمة
         db.execute(
-          'CREATE TABLE sequence(id INTEGER PRIMARY KEY AUTOINCREMENT,clientId INTEGER,total_price INTEGER,updateTimeDebts TEXT)',
+          'CREATE TABLE sequence(id INTEGER PRIMARY KEY AUTOINCREMENT,clientId INTEGER,total_price INTEGER,updateTimeDebts TEXT,profits INTEGER)',
         );
         // الاحداث
         // db.execute(
         //   'CREATE TABLE events(id INTEGER PRIMARY KEY AUTOINCREMENT,admin_id INTEGER,event_type TEXT,event_details,Time TEXT)',
         // );
-
+        // الاحداث
         db.execute(
           'CREATE TABLE events(id INTEGER PRIMARY KEY AUTOINCREMENT, adminId INTEGER, eventType TEXT, eventDetails TEXT, time TEXT)',
         );
@@ -83,6 +84,7 @@ class DatabaseProvider extends ChangeNotifier {
     _products = await getAllProducts();
     _accounts = await getAllAccounts();
     baskets = await getBasketItems();
+    // basketClient = await getBasketClientItems();
     admins = await getAllAdmins(); // جلب الإداريين
     events = await getAllEvents(); // جلب الأحداث
     sequence = await getAllSequence(); // جلب الأحداث
@@ -243,6 +245,18 @@ class DatabaseProvider extends ChangeNotifier {
 
     return List.generate(maps.length, (i) {
       return BasketModel.fromMap(maps[i]);
+    });
+  }
+
+  Future<List<BasketClientModel>> getBasketClientItems(int sequenceid) async {
+    final List<Map<String, dynamic>> maps = await _database.query(
+      'basket_client',
+      // where: 'sequenceid = ?',
+      // whereArgs: [sequenceid]
+    );
+
+    return List.generate(maps.length, (i) {
+      return BasketClientModel.fromMap(maps[i]);
     });
   }
 

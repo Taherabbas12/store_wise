@@ -13,6 +13,7 @@ import '../../model/sequence_model.dart';
 class SearchActionSheet extends StatefulWidget {
   int idBasket;
   int totalPrice;
+  int profits;
   List<bool> x;
   PrintDataPdfModel printDataPdf;
   SearchActionSheet({
@@ -21,6 +22,7 @@ class SearchActionSheet extends StatefulWidget {
     required this.totalPrice,
     required this.printDataPdf,
     required this.x,
+    required this.profits,
   });
   @override
   _SearchActionSheetState createState() => _SearchActionSheetState();
@@ -75,7 +77,8 @@ class _SearchActionSheetState extends State<SearchActionSheet> {
                     sequenceModel: SequenceModel(
                         clientId: filteredAccounts[i].id,
                         totalPrice: widget.totalPrice,
-                        updateTimeDebts: DateTime.now().toString()));
+                        profits: widget.profits,
+                        updateTimeDebts: DateTime.now()));
                 widget.printDataPdf.nameSalary = filteredAccounts[i].name;
                 widget.printDataPdf.numberOFInvoice =
                     widget.idBasket.toString();
@@ -113,8 +116,13 @@ class _SearchActionSheetState extends State<SearchActionSheet> {
   }
 }
 
-Future<void> addBasketToClient(BuildContext context, int idBasket,
-    int totalPrice, PrintDataPdfModel printDataPdf, List<bool> x) async {
+Future<void> addBasketToClient(
+    BuildContext context,
+    int idBasket,
+    int totalPrice,
+    int profits,
+    PrintDataPdfModel printDataPdf,
+    List<bool> x) async {
   await showCupertinoModalPopup<void>(
     context: context,
     builder: (BuildContext context) {
@@ -122,6 +130,7 @@ Future<void> addBasketToClient(BuildContext context, int idBasket,
           idBasket: idBasket,
           totalPrice: totalPrice,
           printDataPdf: printDataPdf,
+          profits: profits,
           x: x);
     },
   );

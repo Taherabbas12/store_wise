@@ -101,25 +101,34 @@ class _ViewItemsState extends State<ViewItems> {
                   purchasingPrice.text.isNotEmpty &&
                   description.text.isNotEmpty &&
                   note.text.isNotEmpty) {
-                idLast++;
-                final newProduct = Product(
-                  id: idLast,
-                  nameProduct: nameProduct.text,
-                  description: description.text,
-                  note: note.text,
-                  purchasingPrice: int.parse(purchasingPrice.text),
-                  quantity: int.parse(quantity.text),
-                  sellingPrice: int.parse(sellingPrice.text),
-                );
-                await databaseProvider.insertProduct(newProduct);
-                setState(() {
-                  nameProduct.clear();
-                  quantity.clear();
-                  sellingPrice.clear();
-                  purchasingPrice.clear();
-                  description.clear();
-                  note.clear();
-                });
+                if (int.parse(sellingPrice.text) >
+                    int.parse(purchasingPrice.text)) {
+                  idLast++;
+                  final newProduct = Product(
+                    id: idLast,
+                    nameProduct: nameProduct.text,
+                    description: description.text,
+                    note: note.text,
+                    purchasingPrice: int.parse(purchasingPrice.text),
+                    quantity: int.parse(quantity.text),
+                    sellingPrice: int.parse(sellingPrice.text),
+                  );
+                  await databaseProvider.insertProduct(newProduct);
+                  setState(() {
+                    nameProduct.clear();
+                    quantity.clear();
+                    sellingPrice.clear();
+                    purchasingPrice.clear();
+                    description.clear();
+                    note.clear();
+                  });
+                } else {
+                  Toast.show("يجب ان يكون سعر البيع اكثر من سعر الشراء",
+                      backgroundColor: Colors.red,
+                      backgroundRadius: 10,
+                      duration: Toast.lengthLong,
+                      gravity: Toast.bottom);
+                }
               } else {
                 Toast.show("يرجى ملأ كل الحقول اولا",
                     backgroundColor: Colors.red,

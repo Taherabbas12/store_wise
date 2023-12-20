@@ -3,6 +3,7 @@ class BasketModel {
   late int requiredQuantity;
   late int price;
   late int totalPrice;
+  int totalPriceProfits;
   late String note;
   late int id;
   int idBasket;
@@ -15,6 +16,7 @@ class BasketModel {
     required this.totalPrice,
     required this.note,
     required this.idBasket,
+    required this.totalPriceProfits,
   });
 
   // تحويل البيانات إلى Map
@@ -26,6 +28,7 @@ class BasketModel {
       'price': price,
       'totalPrice': totalPrice,
       'note': note,
+      'totalPriceProfits': totalPriceProfits,
     };
   }
 
@@ -39,6 +42,7 @@ class BasketModel {
       price: map['price'],
       totalPrice: map['totalPrice'],
       note: map['note'],
+      totalPriceProfits: map['totalPriceProfits'],
     );
   }
 }
