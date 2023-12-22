@@ -250,10 +250,9 @@ class DatabaseProvider extends ChangeNotifier {
 
   Future<List<BasketClientModel>> getBasketClientItems(int sequenceid) async {
     final List<Map<String, dynamic>> maps = await _database.query(
-      'basket_client',
-      // where: 'sequenceid = ?',
-      // whereArgs: [sequenceid]
-    );
+        'basket_client',
+        where: 'sequenceid = ?',
+        whereArgs: [sequenceid]);
 
     return List.generate(maps.length, (i) {
       return BasketClientModel.fromMap(maps[i]);
@@ -432,12 +431,14 @@ class DatabaseProvider extends ChangeNotifier {
       // );
     }
 
-    AccountModel updateAccounts =
-        accounts.where((element) => element.id == clientId).first;
+    try {
+      AccountModel updateAccounts =
+          accounts.where((element) => element.id == clientId).first;
 
-    updateAccounts.debts += sequenceModel.totalPrice;
-    updateAccounts.updateTimeDebts = DateTime.now();
-    updateAccount(updateAccounts);
+      updateAccounts.debts += sequenceModel.totalPrice;
+      updateAccounts.updateTimeDebts = DateTime.now();
+      updateAccount(updateAccounts);
+    } catch (e) {}
     // deleteAllBasketItems(idBasket);
     await insertEvent(EventsModel(
         adminId: adminId,

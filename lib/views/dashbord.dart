@@ -16,10 +16,10 @@ class DashBord extends StatelessWidget {
         name: "قائمة بيع",
         url: "Sale",
         image: 'assets/bord_images/klipartz.com (1).png'),
-    DataView(
-        name: " قائمة ارجاع بيع",
-        url: "Sale",
-        image: 'assets/bord_images/klipartz.com (9).png'),
+    // DataView(
+    //     name: " قائمة ارجاع بيع",
+    //     url: "Sale",
+    //     image: 'assets/bord_images/klipartz.com (9).png'),
     DataView(
         name: "اضافة منتجات وعرضها",
         url: "ViewItems",
@@ -36,10 +36,10 @@ class DashBord extends StatelessWidget {
         name: "تقارير",
         url: "ReportScreen",
         image: 'assets/bord_images/klipartz.com (7).png'),
-    DataView(
-        name: "الاعدادات",
-        url: "SettingScreen",
-        image: 'assets/bord_images/klipartz.com (8).png'),
+    // DataView(
+    //     name: "الاعدادات",
+    //     url: "SettingScreen",
+    //     image: 'assets/bord_images/klipartz.com (8).png'),
   ];
 
   @override
@@ -57,7 +57,9 @@ class DashBord extends StatelessWidget {
             padding: EdgeInsets.symmetric(
                 horizontal: MediaQuery.sizeOf(context).width * 0.1),
             child: Wrap(
+              runSpacing: 10,
               alignment: WrapAlignment.center,
+              spacing: 10,
               children: List.generate(
                 views.length,
                 (index) => InkWell(

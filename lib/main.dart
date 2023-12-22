@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'constants/colors_cos.dart';
 import 'database/database_helper.dart';
+import 'pdf/create_invoice_pdf.dart';
 import 'views/accounts/accounts.dart';
 import 'views/accounts/add_account.dart';
 import 'views/admins/activit_app.dart';
@@ -15,10 +16,7 @@ import 'views/items/view_items.dart';
 import 'views/reports/reports_screen.dart';
 import 'views/sale/sale.dart';
 import 'views/settings/setting_screen.dart';
-import 'views/show_menu/show_menu_screen.dart';
 
-String localShard = 'Microsoft';
-String localShardPath = 'C:\\Users\\Public\\Documents';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   if (Platform.isWindows || Platform.isLinux) {
@@ -34,11 +32,24 @@ Future<void> main() async {
   await GetStorage.init(
     localShard,
   );
-
   try {
-    String a = GetStorage(localShard, localShardPath).read('token');
+    // قراءة قيمة التاريخ المخزنة كنص
+    String storedDate =
+        GetStorage(localShard, localShardPath).read('tokenDate');
+
+    // تحويل التاريخ المخزن إلى كائن DateTime
+    DateTime storedDateTime = DateTime.parse(storedDate);
+
+    // حساب فارق الوقت بالدقائق بين التاريخ الحالي والتاريخ المخزن
+    int differenceInMinutes = DateTime.now().difference(storedDateTime).inDays;
+
+    // إذا كان فارق الوقت أكبر من 1 دقيقة، قم بحذف الرمز
+    if (differenceInMinutes > 7) {
+      GetStorage(localShard, localShardPath).remove('token');
+    }
     // print('print $v');
   } catch (e) {
+    // في حالة الخطأ، قم بتعيين قيمة "not Active" للرمز
     GetStorage(localShard, localShardPath).write('token', 'not Active');
     // print(GetStorage('tokeeen3').read('token'));
   }
@@ -75,7 +86,7 @@ class MyApp extends StatelessWidget {
       },
       navigatorObservers: const [],
       routes: {
-        '/': (context) => GetStorage(localShard).read('token') == 'ActiveIsNow'
+        '/': (context) => GetStorage(localShard).read('token') == 'ActiveIsNow2'
             ? DashBord()
             : ActivitApp(),
         'ViewItems': (context) => const ViewItems(),

@@ -19,7 +19,7 @@ class BasketClientModel {
 
   factory BasketClientModel.fromMap(Map<String, dynamic> map) {
     return BasketClientModel(
-      sequenceId: map['sequenceId'],
+      sequenceId: map['sequenceId'] ?? 0,
       nameProduct: map['nameProduct'],
       requiredQuantity: map['requiredQuantity'],
       price: map['price'],

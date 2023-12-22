@@ -1,5 +1,6 @@
 // ignore_for_file: must_be_immutable, prefer_typing_uninitialized_variables, use_build_context_synchronously
 
+import '../../model/sequence_model.dart';
 import '/constants/colors_cos.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +21,10 @@ class Sale extends StatelessWidget {
   int profits = 0;
   int idBasket = 1;
   PrintDataPdfModel printDataPdf = PrintDataPdfModel(
-      nameSalary: '', numberOFInvoice: '0', phoneSalary: '', address: '');
+      nameSalary: 'بيع مباشر',
+      numberOFInvoice: '0',
+      phoneSalary: '',
+      address: '');
 
   Sale({super.key});
 
@@ -39,6 +43,7 @@ class Sale extends StatelessWidget {
                 alignment: Alignment.topCenter,
                 color: colorPrimary.withOpacity(0.6),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Container(
                       margin: const EdgeInsets.all(5),
@@ -54,12 +59,16 @@ class Sale extends StatelessWidget {
                             const TextStyle(color: Colors.white60),
                       ),
                     ),
-                    buildDataTable(
-                        databaseProvider.products
-                            .where((element) => element.nameProduct
-                                .contains(searchController.text.trim()))
-                            .toList(),
-                        context),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: buildDataTable(
+                            databaseProvider.products
+                                .where((element) => element.nameProduct
+                                    .contains(searchController.text.trim()))
+                                .toList(),
+                            context),
+                      ),
+                    ),
                   ],
                 )),
             Expanded(
@@ -233,67 +242,78 @@ class Sale extends StatelessWidget {
   Widget buildDataTable(List<Product> products, BuildContext context) {
     bool isBlackRow = false; // متغير لتبديل لون الصفوف
 
-    return SizedBox(
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 5),
+      width: 400,
       child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: DataTable(
-          dataRowColor: MaterialStateColor.resolveWith((_) => Colors.amber),
-          columnSpacing: MediaQuery.sizeOf(context).width * 0.009,
-          dataRowMaxHeight: 55,
-          dataRowMinHeight: 55,
-          columns: const [
-            DataColumn(label: Text('ت', style: TextStyle(color: Colors.white))),
-            DataColumn(
-                label: Center(
-                    child: Text('اسم المنتج',
-                        style: TextStyle(color: Colors.white)))),
-            DataColumn(
-                label: Text('الكمية المتوفرة | سعر البيع',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.white))),
-          ],
-          rows: List.generate(products.length, (i) {
-            isBlackRow = !isBlackRow; // تبديل قيمة متغير اللون
+        // scrollDirection: Axis.horizontal,
+        child: Row(
+          children: [
+            Expanded(
+              child: DataTable(
+                dataRowColor:
+                    MaterialStateColor.resolveWith((_) => Colors.amber),
+                columnSpacing: MediaQuery.sizeOf(context).width * 0.009,
+                dataRowMaxHeight: 55,
+                dataRowMinHeight: 55,
+                columns: const [
+                  DataColumn(
+                      label: Text('ت', style: TextStyle(color: Colors.white))),
+                  DataColumn(
+                      label: Center(
+                          child: Text('اسم المنتج',
+                              style: TextStyle(color: Colors.white)))),
+                  DataColumn(
+                      label: Text('الكمية المتوفرة | سعر البيع',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.white))),
+                ],
+                rows: List.generate(products.length, (i) {
+                  isBlackRow = !isBlackRow; // تبديل قيمة متغير اللون
 
-            return DataRow(
-              color: isBlackRow
-                  ? MaterialStateColor.resolveWith((_) =>
-                      products[i].quantity > 10
-                          ? Colors.grey.shade300
-                          : Colors.red.shade200)
-                  : MaterialStateColor.resolveWith((_) =>
-                      products[i].quantity > 10
-                          ? Colors.white
-                          : Colors.red.shade200),
-              cells: [
-                DataCell(Text((i + 1).toString())),
-                DataCell(Material(
-                  color: Colors.transparent,
-                  child: CupertinoButton(
-                      onPressed: () {
-                        if (databaseProvider.baskets
-                            .where((element) =>
-                                element.nameProduct == products[i].nameProduct)
-                            .isEmpty) {
-                          showRowDetailsDialog(context, products[i]);
-                        } else {
-                          Toast.show("تمت اضافة هذا المنتج بالفعل",
-                              backgroundColor: Colors.red,
-                              backgroundRadius: 10,
-                              duration: Toast.lengthLong,
-                              gravity: Toast.bottom);
-                        }
-                      },
-                      child: Text(products[i].nameProduct)),
-                )),
-                DataCell(Center(
-                  child: Text(
-                      '${products[i].quantity} | ${formatCurrency(products[i].sellingPrice.toString())}',
-                      textAlign: TextAlign.center),
-                )),
-              ],
-            );
-          }),
+                  return DataRow(
+                    color: isBlackRow
+                        ? MaterialStateColor.resolveWith((_) =>
+                            products[i].quantity > 10
+                                ? Colors.grey.shade300
+                                : Colors.red.shade200)
+                        : MaterialStateColor.resolveWith((_) =>
+                            products[i].quantity > 10
+                                ? Colors.white
+                                : Colors.red.shade200),
+                    cells: [
+                      DataCell(Text((i + 1).toString())),
+                      DataCell(Material(
+                        color: Colors.transparent,
+                        child: CupertinoButton(
+                            onPressed: () {
+                              if (databaseProvider.baskets
+                                  .where((element) =>
+                                      element.nameProduct ==
+                                      products[i].nameProduct)
+                                  .isEmpty) {
+                                showRowDetailsDialog(context, products[i]);
+                              } else {
+                                Toast.show("تمت اضافة هذا المنتج بالفعل",
+                                    backgroundColor: Colors.red,
+                                    backgroundRadius: 10,
+                                    duration: Toast.lengthLong,
+                                    gravity: Toast.bottom);
+                              }
+                            },
+                            child: Text(products[i].nameProduct)),
+                      )),
+                      DataCell(Center(
+                        child: Text(
+                            '${products[i].quantity} | ${formatCurrency(products[i].sellingPrice.toString())}',
+                            textAlign: TextAlign.center),
+                      )),
+                    ],
+                  );
+                }),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -303,139 +323,149 @@ class Sale extends StatelessWidget {
     bool isBlackRow = false; // متغير لتبديل لون الصفوف
     totalPrice = 0;
     profits = 0;
-    return SizedBox(
+    return Expanded(
       child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          children: [
-            DataTable(
-                dataRowMaxHeight: 55,
-                dataRowMinHeight: 55,
-                headingRowColor: MaterialStateColor.resolveWith(
-                  (_) => colorPrimary.withOpacity(0.7),
-                ),
-                // columnSpacing: MediaQuery.sizeOf(context).width * 0.07,
-                columns: [
-                  const DataColumn(
-                      label: SizedBox(
-                          child: Text('العمليات',
-                              style: TextStyle(color: Colors.white)))),
-                  const DataColumn(
-                      label: SizedBox(
-                    child: Text('ت', style: TextStyle(color: Colors.white)),
-                  )),
-                  DataColumn(
-                      label: SizedBox(
-                          width: MediaQuery.sizeOf(context).width * 0.15,
-                          child: const Text('اسم المنتج',
-                              style: TextStyle(color: Colors.white)))),
-                  const DataColumn(
-                      label: SizedBox(
-                          width: 70,
-                          child: Text('العدد',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(color: Colors.white)))),
-                  const DataColumn(
-                      label: SizedBox(
-                          width: 70,
-                          child: Text('السعر',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(color: Colors.white)))),
-                  const DataColumn(
-                      label: SizedBox(
-                          width: 70,
-                          child: Text('المجموع',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(color: Colors.white)))),
-                  const DataColumn(
-                      label: SizedBox(
-                          width: 100,
-                          child: Text('ملاحظة',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(color: Colors.white)))),
-                ],
-                rows: baskets.isNotEmpty
-                    ? List.generate(baskets.length, (i) {
-                        isBlackRow = !isBlackRow; // تبديل قيمة متغير اللون
-                        totalPrice += baskets[i].totalPrice;
-                        profits += baskets[i].totalPrice -
-                            baskets[i].totalPriceProfits;
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: SizedBox(
+            width: MediaQuery.sizeOf(context).width * 0.778,
+            child: Row(
+              children: [
+                Expanded(
+                  child: DataTable(
+                      dataRowMaxHeight: 55,
+                      dataRowMinHeight: 55,
+                      headingRowColor: MaterialStateColor.resolveWith(
+                        (_) => colorPrimary.withOpacity(0.7),
+                      ),
+                      // columnSpacing: MediaQuery.sizeOf(context).width * 0.07,
+                      columns: [
+                        const DataColumn(
+                            label: SizedBox(
+                                child: Text('العمليات',
+                                    style: TextStyle(color: Colors.white)))),
+                        const DataColumn(
+                            label: SizedBox(
+                          child:
+                              Text('ت', style: TextStyle(color: Colors.white)),
+                        )),
+                        DataColumn(
+                            label: SizedBox(
+                                width: MediaQuery.sizeOf(context).width * 0.15,
+                                child: const Text('اسم المنتج',
+                                    style: TextStyle(color: Colors.white)))),
+                        const DataColumn(
+                            label: SizedBox(
+                                width: 70,
+                                child: Text('العدد',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(color: Colors.white)))),
+                        const DataColumn(
+                            label: SizedBox(
+                                width: 70,
+                                child: Text('السعر',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(color: Colors.white)))),
+                        const DataColumn(
+                            label: SizedBox(
+                                width: 70,
+                                child: Text('المجموع',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(color: Colors.white)))),
+                        const DataColumn(
+                            label: SizedBox(
+                                width: 100,
+                                child: Text('ملاحظة',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(color: Colors.white)))),
+                      ],
+                      rows: baskets.isNotEmpty
+                          ? List.generate(baskets.length, (i) {
+                              isBlackRow =
+                                  !isBlackRow; // تبديل قيمة متغير اللون
+                              totalPrice += baskets[i].totalPrice;
+                              profits += baskets[i].totalPrice -
+                                  baskets[i].totalPriceProfits;
 
-                        return DataRow(
-                          color: isBlackRow
-                              ? MaterialStateColor.resolveWith(
-                                  (_) => Colors.grey.shade300)
-                              : MaterialStateColor.resolveWith(
-                                  (_) => Colors.white),
-                          cells: [
-                            DataCell(Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                InkWell(
-                                  onTap: () {
-                                    showRowDetailsDialog2(context, baskets[i]);
-                                  },
-                                  child: const Icon(Icons.info,
-                                      color: Colors.blue),
-                                ),
-                                const SizedBox(width: 8),
-                                InkWell(
-                                  onTap: () {
-                                    editBasket(
-                                        context,
-                                        baskets[i],
-                                        databaseProvider.products
-                                            .where((element) =>
-                                                element.nameProduct ==
-                                                baskets[i].nameProduct)
-                                            .first);
-                                  },
-                                  child: const Icon(Icons.update,
-                                      color: Colors.green),
-                                ),
-                                const SizedBox(width: 8),
-                                InkWell(
-                                  onTap: () {
-                                    deleteBasket(
-                                        context,
-                                        baskets[i],
-                                        databaseProvider.products
-                                            .where((element) =>
-                                                element.nameProduct ==
-                                                baskets[i].nameProduct)
-                                            .first);
-                                  },
-                                  child: const Icon(Icons.delete,
-                                      color: Colors.red),
-                                ),
-                              ],
-                            )),
-                            DataCell(Text((i + 1).toString())),
-                            DataCell(Text(baskets[i].nameProduct)),
-                            DataCell(
-                                Text(baskets[i].requiredQuantity.toString())),
-                            DataCell(Text(
-                                formatCurrency(baskets[i].price.toString()))),
-                            DataCell(Text(formatCurrency(
-                                baskets[i].totalPrice.toString()))),
-                            DataCell(Text(baskets[i].note)),
-                          ],
-                        );
-                      })
-                    : [
-                        const DataRow(
-                          cells: [
-                            DataCell(Text('')),
-                            DataCell(Text('0')),
-                            DataCell(Text('لم يتم اضافة أي منتجات')),
-                            DataCell(Text('0')),
-                            DataCell(Text('0000')),
-                            DataCell(Text('0000')),
-                            DataCell(Text('لايوجد')),
-                          ],
-                        )
-                      ]),
-          ],
+                              return DataRow(
+                                color: isBlackRow
+                                    ? MaterialStateColor.resolveWith(
+                                        (_) => Colors.grey.shade300)
+                                    : MaterialStateColor.resolveWith(
+                                        (_) => Colors.white),
+                                cells: [
+                                  DataCell(Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      InkWell(
+                                        onTap: () {
+                                          showRowDetailsDialog2(
+                                              context, baskets[i]);
+                                        },
+                                        child: const Icon(Icons.info,
+                                            color: Colors.blue),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      InkWell(
+                                        onTap: () {
+                                          editBasket(
+                                              context,
+                                              baskets[i],
+                                              databaseProvider.products
+                                                  .where((element) =>
+                                                      element.nameProduct ==
+                                                      baskets[i].nameProduct)
+                                                  .first);
+                                        },
+                                        child: const Icon(Icons.update,
+                                            color: Colors.green),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      InkWell(
+                                        onTap: () {
+                                          deleteBasket(
+                                              context,
+                                              baskets[i],
+                                              databaseProvider.products
+                                                  .where((element) =>
+                                                      element.nameProduct ==
+                                                      baskets[i].nameProduct)
+                                                  .first);
+                                        },
+                                        child: const Icon(Icons.delete,
+                                            color: Colors.red),
+                                      ),
+                                    ],
+                                  )),
+                                  DataCell(Text((i + 1).toString())),
+                                  DataCell(Text(baskets[i].nameProduct)),
+                                  DataCell(Text(
+                                      baskets[i].requiredQuantity.toString())),
+                                  DataCell(Text(formatCurrency(
+                                      baskets[i].price.toString()))),
+                                  DataCell(Text(formatCurrency(
+                                      baskets[i].totalPrice.toString()))),
+                                  DataCell(Text(baskets[i].note)),
+                                ],
+                              );
+                            })
+                          : [
+                              const DataRow(
+                                cells: [
+                                  DataCell(Text('')),
+                                  DataCell(Text('0')),
+                                  DataCell(Text('لم يتم اضافة أي منتجات')),
+                                  DataCell(Text('0')),
+                                  DataCell(Text('0000')),
+                                  DataCell(Text('0000')),
+                                  DataCell(Text('لايوجد')),
+                                ],
+                              )
+                            ]),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -710,6 +740,9 @@ class Sale extends StatelessWidget {
     int index = 1;
     int sumNumber = 0;
     List<ModelPDf> user = [];
+    printDataPdf.numberOFInvoice =
+        '${databaseProvider.sequence[databaseProvider.sequence.length - 1].id! + 1}';
+
     if (!isInInvoise) {
       for (BasketModel i in databaseProvider.baskets
           .where((element) => element.idBasket == idBasket)
@@ -726,7 +759,6 @@ class Sale extends StatelessWidget {
 
       final pdfFile = await PdfApi.generateTaple(
           printDataPdf: printDataPdf,
-          indexOfInvoice: '1',
           user: user,
           totalPrice: totalPrice,
           totalCont: sumNumber);
@@ -757,10 +789,21 @@ class Sale extends StatelessWidget {
                         theNumber: i.requiredQuantity));
                     sumNumber += i.requiredQuantity;
                   }
+                  SequenceModel sequenceModel = SequenceModel(
+                    clientId: 0,
+                    profits: profits,
+                    totalPrice: totalPrice,
+                    updateTimeDebts: DateTime.now(),
+                  );
+                  await databaseProvider.moveBasketDataToClient(
+                    adminId: 1,
+                    clientId: 0,
+                    idBasket: idBasket,
+                    sequenceModel: sequenceModel,
+                  );
 
                   final pdfFile = await PdfApi.generateTaple(
                       printDataPdf: printDataPdf,
-                      indexOfInvoice: '1',
                       user: user,
                       totalPrice: totalPrice,
                       totalCont: sumNumber);

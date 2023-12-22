@@ -32,7 +32,6 @@ class PdfApi {
     required PrintDataPdfModel printDataPdf,
     required totalCont,
     required totalPrice,
-    required String indexOfInvoice,
   }) async {
     final pdf = Document();
     final header = [
@@ -59,8 +58,8 @@ class PdfApi {
         Font.ttf(await rootBundle.load("assets/Hacen Tunisia.ttf"));
     // هذا تطبع على حجم الملف كلما كبر الملف تطبع القائمة على حجمة
 
-    if (data.length <= 20) {
-      pdf.addPage(dataPageMulti(
+    if (data.length <= 17) {
+      pdf.addPage(await dataPageMulti(
           index: '1  من 1',
           arabicFont: arabicFont,
           data: data,
@@ -69,37 +68,37 @@ class PdfApi {
           isEnd: true,
           totalCont: totalCont.toString(),
           totalPrice: totalPrice.toString()));
-    } else if (data.length <= 40) {
-      pdf.addPage(dataPageMulti(
+    } else if (data.length <= 34) {
+      pdf.addPage(await dataPageMulti(
           index: '1  من 2',
           printDataPdf: printDataPdf,
           arabicFont: arabicFont,
-          data: data.sublist(0, 20),
+          data: data.sublist(0, 17),
           header: header));
-      pdf.addPage(dataPageMulti(
+      pdf.addPage(await dataPageMulti(
           index: '2  من 2',
           printDataPdf: printDataPdf,
           arabicFont: arabicFont,
-          data: data.sublist(20, data.length),
+          data: data.sublist(17, data.length),
           header: header,
           isEnd: true,
           totalCont: totalCont.toString(),
-          totalPrice: totalPrice));
-    } else if (data.length <= 60) {
-      pdf.addPage(dataPageMulti(
+          totalPrice: totalPrice.toString()));
+    } else if (data.length <= 54) {
+      pdf.addPage(await dataPageMulti(
         index: '1  من 3',
         printDataPdf: printDataPdf,
         arabicFont: arabicFont,
         data: data.sublist(0, 20),
         header: header,
       ));
-      pdf.addPage(dataPageMulti(
+      pdf.addPage(await dataPageMulti(
           index: '2  من 3',
           printDataPdf: printDataPdf,
           arabicFont: arabicFont,
           data: data.sublist(20, 40),
           header: header));
-      pdf.addPage(dataPageMulti(
+      pdf.addPage(await dataPageMulti(
           index: '3  من 3',
           printDataPdf: printDataPdf,
           arabicFont: arabicFont,
@@ -107,27 +106,27 @@ class PdfApi {
           header: header,
           isEnd: true,
           totalCont: totalCont.toString(),
-          totalPrice: totalPrice));
+          totalPrice: totalPrice.toString()));
     } else if (data.length <= 80) {
-      pdf.addPage(dataPageMulti(
+      pdf.addPage(await dataPageMulti(
           index: '1  من 4',
           printDataPdf: printDataPdf,
           arabicFont: arabicFont,
           data: data.sublist(0, 20),
           header: header));
-      pdf.addPage(dataPageMulti(
+      pdf.addPage(await dataPageMulti(
           index: '2  من 4 ',
           printDataPdf: printDataPdf,
           arabicFont: arabicFont,
           data: data.sublist(20, 40),
           header: header));
-      pdf.addPage(dataPageMulti(
+      pdf.addPage(await dataPageMulti(
           index: '3 من 4 ',
           printDataPdf: printDataPdf,
           arabicFont: arabicFont,
           data: data.sublist(40, 60),
           header: header));
-      pdf.addPage(dataPageMulti(
+      pdf.addPage(await dataPageMulti(
           index: '4 من 4 ',
           printDataPdf: printDataPdf,
           arabicFont: arabicFont,
@@ -135,13 +134,21 @@ class PdfApi {
           header: header,
           isEnd: true,
           totalCont: totalCont.toString(),
-          totalPrice: totalPrice));
+          totalPrice: totalPrice.toString()));
     }
 
     return saveDocument(name: 'my_example.pdf', pdf: pdf);
   }
 
-  static MultiPage dataPageMulti(
+  static Future<Uint8List> getImageBytes() async {
+    // قم بتحميل صورتك هنا، يمكنك استخدام الحزمة 'image' مثل 'image_picker'
+    // أو تحميلها من الإنترنت أو من مصدر آخر.
+    // هنا يتم استخدام صورة بسيطة من الأمثلة.
+    final ByteData data = await rootBundle.load('assets/logo_car/LOGO1.png');
+    return data.buffer.asUint8List();
+  }
+
+  static Future<MultiPage> dataPageMulti(
       {required arabicFont,
       required data,
       required header,
@@ -149,17 +156,64 @@ class PdfApi {
       required index,
       String totalPrice = '',
       String totalCont = '',
-      bool isEnd = false}) {
+      bool isEnd = false}) async {
+    var v = await getImageBytes();
     return MultiPage(
-        footer: (context) =>
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              Text('رقم القائمة:$index'),
-              Text(printDataPdf.nameSalary),
+        footer: (context) => Column(children: [
+              Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+                Text('رقم القائمة:$index'),
+                Text(printDataPdf.nameSalary),
+              ]),
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                Text('الخطأ والسهو مرجوع للطرفين'),
+                Text('توقيع . . . . . . .'),
+              ])
             ]),
         pageFormat: PdfPageFormat.a4,
         orientation: PageOrientation.portrait,
         crossAxisAlignment: CrossAxisAlignment.start,
-        header: (context) => Row(children: [Text('')]),
+        header: (context) => Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            decoration: BoxDecoration(
+                color: PdfColors.blue100,
+                border: Border.all(color: PdfColors.blue900),
+                borderRadius: BorderRadius.circular(5)),
+            width: double.infinity,
+            child: Column(children: [
+              Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Stack(children: [
+                      Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            SizedBox(height: 55),
+                            Container(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 50),
+                              child: Image(MemoryImage(v),
+                                  height: 30, width: 150, fit: BoxFit.contain),
+                            )
+                          ]),
+                      Text('محلات النبأ',
+                          style: TextStyle(
+                              fontSize: 50,
+                              fontBold: Font.timesBold(),
+                              height: 0)),
+                    ]),
+                    Text(
+                        'لبيع الادوات الاحتياطية للسيارات\nوبيع جميع انواع المحركات (الثقيلة والمولدات)\nبغداد-كسرة وعطش-مقابل دائرة الكهرباء',
+                        style: TextStyle(
+                            fontSize: 14,
+                            fontBold: Font.timesBold(),
+                            height: 0)),
+                  ]),
+              Text(
+                  'بأدارة السيد باسم 07901150818-07707260572    |   سلمان 07716837908',
+                  style: TextStyle(fontSize: 14, fontBold: Font.timesBold()),
+                  textAlign: TextAlign.center),
+            ])),
         theme: ThemeData.withFont(
           base: arabicFont,
         ),
@@ -168,12 +222,15 @@ class PdfApi {
         build: (context) => [
               Wrap(children: [
                 // الجدول
-
                 ListView(children: [
                   Container(
-                    margin:
-                        const EdgeInsets.symmetric(horizontal: 30, vertical: 5),
+                    decoration: BoxDecoration(
+                      border: Border.all(),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    margin: const EdgeInsets.symmetric(vertical: 5),
                     height: 35,
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
                     child:
                         Row(verticalDirection: VerticalDirection.up, children: [
                       Expanded(
@@ -199,8 +256,9 @@ class PdfApi {
                     data: data,
                     headers: header,
                     cellAlignment: Alignment.bottomRight,
-                    headerDecoration:
-                        const BoxDecoration(color: PdfColors.grey200),
+                    headerDecoration: BoxDecoration(
+                        color: PdfColors.grey200,
+                        borderRadius: BorderRadius.circular(5)),
                   ),
                   if (isEnd)
                     Container(
@@ -212,6 +270,7 @@ class PdfApi {
                         children: [
                           Container(
                               decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
                                   border: Border.all(color: PdfColors.black)),
                               height: 25,
                               child: Row(
@@ -231,6 +290,7 @@ class PdfApi {
                                   ])),
                           Container(
                             decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
                                 border: Border.all(color: PdfColors.black)),
                             height: 25,
                             child: Row(

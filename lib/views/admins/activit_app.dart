@@ -5,6 +5,10 @@ import 'package:get_storage/get_storage.dart';
 
 import '../../constants/colors_cos.dart';
 import '../../main.dart';
+import 'dart:convert';
+import 'package:crypto/crypto.dart';
+
+import '../../pdf/create_invoice_pdf.dart';
 
 class ActivitApp extends StatefulWidget {
   ActivitApp({super.key});
@@ -17,8 +21,8 @@ class _ActivitAppState extends State<ActivitApp> {
   TextEditingController controller = TextEditingController(text: '');
   final _key = GlobalKey<FormState>();
 
-  String activatea = 'pdofasfihaspuoqhf9pqoiu218924i1liuwafh01972209pi';
   int stateCont = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,9 +47,11 @@ class _ActivitAppState extends State<ActivitApp> {
                 _key.currentState?.validate();
                 if (stateCont < 5) {
                   if (controller.text.isNotEmpty &&
-                      controller.text == activatea) {
+                      hashText(controller.text) == activatea) {
                     await GetStorage(localShard, localShardPath)
-                        .write('token', 'ActiveIsNow');
+                        .write('token', 'ActiveIsNow2');
+                    await GetStorage(localShard, localShardPath)
+                        .write('tokenDate', DateTime.now().toString());
                     Navigator.pushReplacementNamed(context, '/');
                   } else {
                     //
@@ -71,6 +77,11 @@ class _ActivitAppState extends State<ActivitApp> {
         ),
       )),
     );
+  }
+
+  String hashText(String text) {
+    final hash = md5.convert(utf8.encode(text));
+    return hash.toString();
   }
 
   Widget textFormField(String hint, TextEditingController controller,

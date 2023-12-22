@@ -122,7 +122,10 @@ class Accounnts extends StatelessWidget {
                     ],
                   ),
                 ),
-                buildDataTable2(databaseProvider.debts, context)
+                Expanded(
+                  child: SingleChildScrollView(
+                      child: buildDataTable2(databaseProvider.debts, context)),
+                )
               ],
             )),
         appBar: AppBar(
@@ -165,7 +168,6 @@ class Accounnts extends StatelessWidget {
         children: [
           Expanded(
             child: DataTable(
-              columnSpacing: MediaQuery.sizeOf(context).width * 0.08,
               dataRowMaxHeight: 60,
               headingRowHeight: 60,
               columns: const [

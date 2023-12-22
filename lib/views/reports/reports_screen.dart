@@ -154,120 +154,140 @@ class ReportScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: SingleChildScrollView(
-                        child: DataTable(
-                            columnSpacing: 0.1,
-                            dataRowMaxHeight: 60,
-                            headingRowHeight: 60,
-                            columns: const [
-                              DataColumn(
-                                  label:
-                                      Text('ت', textAlign: TextAlign.center)),
-                              DataColumn(
-                                  label: Text('حضرة السيد',
-                                      textAlign: TextAlign.center)),
-                              DataColumn(
-                                label: Text('مبلغ القائمة',
-                                    textAlign: TextAlign.center),
-                              ),
-                              DataColumn(
-                                label: Text('الارباح',
-                                    textAlign: TextAlign.center),
-                              ),
-                              DataColumn(
-                                  label: Text('التاريخ\nd/m/y',
-                                      textAlign: TextAlign.center)),
-                            ],
-                            rows: List.generate(selectDay.length, (i) {
-                              isBlackRow =
-                                  !isBlackRow; // تبديل قيمة متغير اللون
-                              // استخدام الدالة:
-                              totalPriceProfits += selectDay[i].profits;
-                              String select = "";
-                              try {
-                                select = databaseProvider.accounts
-                                    .where((element) =>
-                                        element.id == selectDay[i].clientId)
-                                    .first
-                                    .name;
-                              } catch (e) {
-                                select = "الحساب محذوف او بيع مباشر";
-                              }
-                              DateTime storedDate =
-                                  selectDay[i].updateTimeDebts;
-                              String timeDifference =
-                                  calculateTimeDifference(storedDate);
-                              return DataRow(
-                                  onLongPress: () async {
-                                    List<BasketClientModel> basketClient =
-                                        await databaseProvider
-                                            .getBasketClientItems(
-                                      selectDay[i].id,
-                                    );
+                Expanded(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: SingleChildScrollView(
+                          child: DataTable(
+                              columnSpacing: 0.1,
+                              dataRowMaxHeight: 60,
+                              headingRowHeight: 60,
+                              columns: const [
+                                DataColumn(
+                                    label:
+                                        Text('ت', textAlign: TextAlign.center)),
+                                DataColumn(
+                                    label: Text('حضرة السيد',
+                                        textAlign: TextAlign.center)),
+                                DataColumn(
+                                  label: Text('مبلغ القائمة',
+                                      textAlign: TextAlign.center),
+                                ),
+                                DataColumn(
+                                  label: Text('الارباح',
+                                      textAlign: TextAlign.center),
+                                ),
+                                DataColumn(
+                                    label: Text('التاريخ\nd/m/y',
+                                        textAlign: TextAlign.center)),
+                              ],
+                              rows: List.generate(selectDay.length, (i) {
+                                isBlackRow =
+                                    !isBlackRow; // تبديل قيمة متغير اللون
+                                // استخدام الدالة:
+                                totalPriceProfits += selectDay[i].profits;
+                                String select = "";
+                                try {
+                                  select = databaseProvider.accounts
+                                      .where((element) =>
+                                          element.id == selectDay[i].clientId)
+                                      .first
+                                      .name;
+                                } catch (e) {
+                                  select = "الحساب محذوف او بيع مباشر";
+                                }
+                                DateTime storedDate =
+                                    selectDay[i].updateTimeDebts;
+                                String timeDifference =
+                                    calculateTimeDifference(storedDate);
+                                return DataRow(
+                                    onLongPress: () async {
+                                      List<BasketClientModel> basketClient =
+                                          await databaseProvider
+                                              .getBasketClientItems(
+                                        selectDay[i].id ?? 0,
+                                      );
 
-                                    showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return AlertDialog(
-                                              title: const Text('عرض القائمة'),
-                                              content: SizedBox(
-                                                height:
-                                                    MediaQuery.sizeOf(context)
-                                                            .height *
-                                                        0.8,
-                                                width:
-                                                    MediaQuery.sizeOf(context)
-                                                            .width *
-                                                        0.8,
-                                                child: ShowMenuScreen(
-                                                    basketClient: basketClient),
-                                              ));
-                                        });
-                                    print(basketClient);
-                                  },
-                                  color: isBlackRow
-                                      ? MaterialStateColor.resolveWith(
-                                          (_) => Colors.grey.shade300)
-                                      : MaterialStateColor.resolveWith(
-                                          (_) => Colors.white),
-                                  cells: [
-                                    DataCell(Text((i + 1).toString(),
-                                        textAlign: TextAlign.center)),
-                                    DataCell(Text(select,
-                                        textAlign: TextAlign.center)),
-                                    DataCell(
-                                      Text(
-                                        formatCurrency(
-                                            selectDay[i].totalPrice.toString()),
-                                        textAlign: TextAlign.center,
-                                        style: const TextStyle(
-                                            fontSize: 17,
-                                            color: Color.fromARGB(
-                                                255, 98, 11, 180)),
+                                      showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                                backgroundColor: Colors.white,
+                                                title: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceAround,
+                                                  children: [
+                                                    Text(
+                                                        'حضرة السيد : $select'),
+                                                    Text(
+                                                      'مجموع القائمة : ${formatCurrency(selectDay[i].totalPrice.toString())}',
+                                                    ),
+                                                    Text(
+                                                      'مجموع الارباح : ${formatCurrency(selectDay[i].profits.toString())}',
+                                                    ),
+                                                  ],
+                                                ),
+                                                content: SizedBox(
+                                                  height:
+                                                      MediaQuery.sizeOf(context)
+                                                              .height *
+                                                          0.8,
+                                                  width:
+                                                      MediaQuery.sizeOf(context)
+                                                              .width *
+                                                          0.8,
+                                                  child: ShowMenuScreen(
+                                                      basketClient:
+                                                          basketClient),
+                                                ));
+                                          });
+                                      print(basketClient);
+                                    },
+                                    color: isBlackRow
+                                        ? MaterialStateColor.resolveWith(
+                                            (_) => Colors.grey.shade300)
+                                        : MaterialStateColor.resolveWith(
+                                            (_) => Colors.white),
+                                    cells: [
+                                      DataCell(Text((i + 1).toString(),
+                                          textAlign: TextAlign.center)),
+                                      DataCell(Text(select,
+                                          textAlign: TextAlign.center)),
+                                      DataCell(
+                                        Text(
+                                          formatCurrency(selectDay[i]
+                                              .totalPrice
+                                              .toString()),
+                                          textAlign: TextAlign.center,
+                                          style: const TextStyle(
+                                              fontSize: 17,
+                                              color: Color.fromARGB(
+                                                  255, 98, 11, 180)),
+                                        ),
                                       ),
-                                    ),
-                                    DataCell(
-                                      Text(
-                                        formatCurrency(
-                                            selectDay[i].profits.toString()),
-                                        textAlign: TextAlign.center,
-                                        style: const TextStyle(
-                                            fontSize: 17,
-                                            color: Color.fromARGB(
-                                                255, 11, 180, 53)),
+                                      DataCell(
+                                        Text(
+                                          formatCurrency(
+                                              selectDay[i].profits.toString()),
+                                          textAlign: TextAlign.center,
+                                          style: const TextStyle(
+                                              fontSize: 17,
+                                              color: Color.fromARGB(
+                                                  255, 11, 180, 53)),
+                                        ),
                                       ),
-                                    ),
-                                    DataCell(Text(
-                                        '${selectDay[i].updateTimeDebts.day}/${selectDay[i].updateTimeDebts.month}/${selectDay[i].updateTimeDebts.year}\n منذ:$timeDifference',
-                                        textAlign: TextAlign.center)),
-                                  ]);
-                            })),
+                                      DataCell(Text(
+                                          '${selectDay[i].updateTimeDebts.day}/${selectDay[i].updateTimeDebts.month}/${selectDay[i].updateTimeDebts.year}\n منذ:$timeDifference',
+                                          textAlign: TextAlign.center)),
+                                    ]);
+                              })),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
                 Container(
                   color: colorPrimary,

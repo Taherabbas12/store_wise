@@ -9,10 +9,16 @@ class ShowMenuScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Column(children: [
-        showMenu(
-          context,
-          basketClient,
+      decoration: BoxDecoration(
+          color: Colors.white, borderRadius: BorderRadius.circular(15)),
+      child: ListView(children: [
+        Row(
+          children: [
+            showMenu(
+              context,
+              basketClient,
+            )
+          ],
         )
       ]),
     );
@@ -27,12 +33,12 @@ class ShowMenuScreen extends StatelessWidget {
         headingRowHeight: 60,
         columns: const [
           DataColumn(label: Text('ت', textAlign: TextAlign.center)),
-          DataColumn(label: Text('حضرة السيد', textAlign: TextAlign.center)),
-          DataColumn(label: Text('اسم المتجر', textAlign: TextAlign.center)),
-          DataColumn(label: Text('رقم الهاتف', textAlign: TextAlign.center)),
+          DataColumn(label: Text('اسم المنتج', textAlign: TextAlign.center)),
+          DataColumn(label: Text('سعر المنتج', textAlign: TextAlign.center)),
+          DataColumn(label: Text('العدد', textAlign: TextAlign.center)),
           DataColumn(
-              label: Text('الدين', textAlign: TextAlign.center),
-              tooltip: 'اضغط على الحقل للتسديد الدين'),
+            label: Text('المجموع', textAlign: TextAlign.center),
+          )
         ],
         rows: List.generate(basketClient.length, (i) {
           isBlackRow = !isBlackRow; // تبديل قيمة متغير اللون

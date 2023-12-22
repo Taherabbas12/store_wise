@@ -1,5 +1,5 @@
 class SequenceModel {
-  int id = 0;
+  int? id = 0;
 
   final int clientId;
 
@@ -8,6 +8,7 @@ class SequenceModel {
   final DateTime updateTimeDebts;
 
   SequenceModel({
+    this.id,
     required this.clientId,
     required this.totalPrice,
     required this.updateTimeDebts,
@@ -16,6 +17,7 @@ class SequenceModel {
 
   factory SequenceModel.fromMap(Map<String, dynamic> map) {
     return SequenceModel(
+      id: map['id'],
       clientId: map['clientId'],
       totalPrice: map['total_price'],
       profits: map['profits'],
