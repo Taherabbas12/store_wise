@@ -16,6 +16,7 @@ import '../widgets/widgers_more.dart';
 
 class Sale extends StatelessWidget {
   late TextEditingController searchController = TextEditingController();
+  late TextEditingController qrCodeController = TextEditingController();
   late DatabaseProvider databaseProvider;
   int totalPrice = 0;
   int profits = 0;
@@ -27,6 +28,7 @@ class Sale extends StatelessWidget {
       address: '');
 
   Sale({super.key});
+  final FocusNode _searchFieldFocusNode = FocusNode();
 
   @override
   Widget build(BuildContext context) {
@@ -57,6 +59,85 @@ class Sale extends StatelessWidget {
                         itemColor: Colors.white,
                         placeholderStyle:
                             const TextStyle(color: Colors.white60),
+                      ),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.all(5),
+                      width: 400,
+                      height: 50,
+                      child: CupertinoSearchTextField(
+                        focusNode: _searchFieldFocusNode,
+                        backgroundColor: colorPrimary.withOpacity(0.8),
+                        controller: qrCodeController,
+                        placeholder: 'امسح الباركود',
+                        style: const TextStyle(color: Colors.white),
+                        itemColor: Colors.white,
+                        placeholderStyle:
+                            const TextStyle(color: Colors.white60),
+                        onSubmitted: (v) async {
+                          try {
+                            Product item = databaseProvider.products
+                                .where((element) => element.description == v)
+                                .first;
+
+                            item.quantity--;
+                            databaseProvider.updateProduct(item);
+                            List<BasketModel> lsitT = databaseProvider.baskets
+                                .where((element) =>
+                                    element.nameProduct == item.nameProduct)
+                                .toList();
+                            if (lsitT.isEmpty) {
+                              BasketModel newBasket = BasketModel(
+                                  idBasket: idBasket,
+                                  id: 0,
+                                  nameProduct: item.nameProduct,
+                                  note: '',
+                                  price: item.sellingPrice,
+                                  requiredQuantity: 1,
+                                  totalPriceProfits: item.purchasingPrice,
+                                  totalPrice: item.sellingPrice);
+                              print('Size : ${lsitT.length}');
+                              databaseProvider.insertBasketItem(newBasket);
+                              print(item.nameProduct);
+                            } else {
+                              lsitT[0].requiredQuantity++;
+                              lsitT[0].totalPrice += lsitT[0].price;
+                              lsitT[0].totalPriceProfits +=
+                                  item.purchasingPrice;
+
+                              await Provider.of<DatabaseProvider>(context,
+                                      listen: false)
+                                  .updateBasketItem(lsitT[0]);
+                              print("LSit IN Items >>>");
+                            }
+                          } catch (e) {
+                            print("المنتج غير موجود");
+                          }
+                          qrCodeController.text = '';
+                          _searchFieldFocusNode
+                              .requestFocus(); // لتحديد التركيز على الحقل النصي
+                          //         int totalPrice =
+                          //     int.parse(price.text) * int.parse(quantity.text);
+                          // int totalPriceProfits =
+                          //     product.purchasingPrice * int.parse(quantity.text);
+                          // BasketModel newBasket = BasketModel(
+                          //     idBasket: idBasket,
+                          //     id: 0,
+                          //     nameProduct: product.nameProduct,
+                          //     note: note.text,
+                          //     price: int.parse(price.text),
+                          //     requiredQuantity: int.parse(quantity.text),
+                          //     totalPriceProfits: totalPriceProfits,
+                          //     totalPrice: totalPrice);
+
+                          // product.quantity -= int.parse(quantity.text);
+
+                          // databaseProvider.updateProduct(product);
+
+                          // databaseProvider.insertBasketItem(newBasket);
+
+                          print(v);
+                        },
                       ),
                     ),
                     Expanded(

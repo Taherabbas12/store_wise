@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 
 import '../../constants/colors_cos.dart';
-import '../../main.dart';
 import 'dart:convert';
 import 'package:crypto/crypto.dart';
 
