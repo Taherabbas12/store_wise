@@ -2,7 +2,6 @@ import 'package:Al_Yaqeen/constants/colors_cos.dart';
 import 'package:flutter/material.dart';
 
 import 'add_admin.dart';
-import 'edit_list_information.dart';
 import 'favorites_app.dart';
 import 'managment_admin.dart';
 
@@ -15,7 +14,6 @@ class SettingScreen extends StatefulWidget {
 
 class _SettingScreenState extends State<SettingScreen> {
   List<ListMenue> listMenue = [
-    ListMenue('تعديل بيانات القائمة', EditListInformation()),
     ListMenue('اضافة حساب', const AddAdmin()),
     ListMenue('ادارة الحسابات', const ManagmentAdmin()),
     ListMenue('تفضيلات التطبيق', const FavoritesApp()),

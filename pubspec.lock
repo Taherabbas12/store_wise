@@ -121,6 +121,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.6"
+  equatable:
+    dependency: transitive
+    description:
+      name: equatable
+      sha256: c2b87cb7756efdf69892005af546c56c0b5037f54d2a88269b4f347a505e3ca2
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.5"
   fake_async:
     dependency: transitive
     description:
@@ -145,6 +153,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "7.0.0"
+  fl_chart:
+    dependency: "direct main"
+    description:
+      name: fl_chart
+      sha256: fe6fec7d85975a99c73b9515a69a6e291364accfa0e4a5b3ce6de814d74b9a1c
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.66.0"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -162,10 +178,10 @@ packages:
     dependency: "direct dev"
     description:
       name: flutter_lints
-      sha256: a25a15ebbdfc33ab1cd26c63a6ee519df92338a9c10f122adda92938253bef04
+      sha256: e2a421b7e59244faef694ba7b30562e489c2b489866e505074eb005cd7060db7
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.3"
+    version: "3.0.1"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -252,10 +268,10 @@ packages:
     dependency: transitive
     description:
       name: lints
-      sha256: "0a217c6c989d21039f1498c3ed9f3ed71b354e69873f13a8dfc3c9fe76f1b452"
+      sha256: cbf8d4b858bb0134ef3ef87841abdf8d63bfc255c266b7bf6b39daa1085c4290
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.1"
+    version: "3.0.0"
   logging:
     dependency: transitive
     description:
@@ -268,10 +284,10 @@ packages:
     dependency: "direct main"
     description:
       name: mailer
-      sha256: "2db255771a1b33aea3ea75181a8fe306d5fad4b40414b1a24088b1f3415a3031"
+      sha256: "57f6dd1496699999a7bfd0aa6be0645384f477f4823e16d4321c40a434346382"
       url: "https://pub.dev"
     source: hosted
-    version: "5.3.0"
+    version: "6.0.1"
   matcher:
     dependency: transitive
     description:
@@ -392,14 +408,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.10.6"
-  pedantic:
-    dependency: transitive
-    description:
-      name: pedantic
-      sha256: "67fc27ed9639506c856c840ccce7594d0bdcd91bc8d53d6e52359449a1d50602"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.11.1"
   petitparser:
     dependency: transitive
     description:

@@ -740,9 +740,10 @@ class Sale extends StatelessWidget {
     int index = 1;
     int sumNumber = 0;
     List<ModelPDf> user = [];
-    printDataPdf.numberOFInvoice =
-        '${databaseProvider.sequence[databaseProvider.sequence.length - 1].id! + 1}';
-
+    try {
+      printDataPdf.numberOFInvoice =
+          '${databaseProvider.sequence[databaseProvider.sequence.length - 1].id! + 1}';
+    } catch (e) {}
     if (!isInInvoise) {
       for (BasketModel i in databaseProvider.baskets
           .where((element) => element.idBasket == idBasket)
@@ -771,10 +772,15 @@ class Sale extends StatelessWidget {
       showDialog(
         context: context,
         builder: (BuildContext context) {
+          TextEditingController namePr = TextEditingController();
           return AlertDialog(
             title: const Text('بيع مباشر'),
             content: const Text('هل انت متأكد من بيع القائمة بشكل مباشر؟'),
             actions: [
+              textFormField(
+                'اسم الزبون',
+                namePr,
+              ),
               ElevatedButton(
                 onPressed: () async {
                   for (BasketModel i in databaseProvider.baskets
@@ -801,6 +807,9 @@ class Sale extends StatelessWidget {
                     idBasket: idBasket,
                     sequenceModel: sequenceModel,
                   );
+                  if (namePr.text.trim().isNotEmpty) {
+                    printDataPdf.nameSalary = namePr.text.trim();
+                  }
 
                   final pdfFile = await PdfApi.generateTaple(
                       printDataPdf: printDataPdf,
