@@ -897,10 +897,11 @@ class Sale extends StatelessWidget {
                       user: user,
                       totalPrice: totalPrice,
                       totalCont: sumNumber);
+                  PdfApi.openFile(pdfFile);
                   if (isInInvoise) {
                     // deleteAllBaskets(context, deleteItems: true);
-                    await Provider.of<DatabaseProvider>(context, listen: false)
-                        .deleteAllBasketItems(idBasket);
+                    // await Provider.of<DatabaseProvider>(context, listen: false)
+                    //     .deleteAllBasketItems(idBasket);
                   }
                   Navigator.of(context).pop();
                 },
