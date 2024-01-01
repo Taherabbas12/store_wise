@@ -36,7 +36,35 @@ class Sale extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: const Text('بيع'),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text('بيع'),
+              const SizedBox(
+                width: 50,
+              ),
+              for (int i = 1; i < 7; i++)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: ElevatedButton(
+                      onPressed: () {
+                        idBasket = i;
+                      },
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: idBasket != i
+                              ? Colors.grey.shade500
+                              : const Color.fromARGB(255, 248, 248, 248),
+                          shape: BeveledRectangleBorder(
+                              borderRadius: BorderRadius.circular(3))),
+                      child: Text(
+                        'القائمة رقم $i',
+                        style: TextStyle(
+                            color: idBasket != i ? Colors.white : Colors.black,
+                            fontWeight: FontWeight.w500),
+                      )),
+                ),
+            ],
+          ),
         ),
         body: Row(
           children: [
@@ -897,11 +925,11 @@ class Sale extends StatelessWidget {
                       user: user,
                       totalPrice: totalPrice,
                       totalCont: sumNumber);
-                  PdfApi.openFile(pdfFile);
+                  // PdfApi.openFile(pdfFile);
                   if (isInInvoise) {
-                    // deleteAllBaskets(context, deleteItems: true);
-                    // await Provider.of<DatabaseProvider>(context, listen: false)
-                    //     .deleteAllBasketItems(idBasket);
+                    deleteAllBaskets(context, deleteItems: true);
+                    await Provider.of<DatabaseProvider>(context, listen: false)
+                        .deleteAllBasketItems(idBasket);
                   }
                   Navigator.of(context).pop();
                 },

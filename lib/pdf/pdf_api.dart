@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:open_file/open_file.dart';
@@ -7,6 +8,7 @@ import 'package:pdf/widgets.dart';
 import 'package:printing/printing.dart';
 
 import '../model/print_data_pdf_model.dart';
+import '../views/widgets/widgers_more.dart';
 
 class ModelPDf {
   final int index;
@@ -44,8 +46,8 @@ class PdfApi {
 
     final data = user
         .map((user) => [
-              user.total,
-              user.price,
+              formatCurrency(user.total.toString()),
+              formatCurrency(user.price.toString()),
               user.theNumber,
               user.subject,
               user.index,
@@ -57,17 +59,19 @@ class PdfApi {
     // هذا تطبع على حجم الملف كلما كبر الملف تطبع القائمة على حجمة
 
     // if (data.length <= 17) {
-    pdf.addPage(
-      await dataPageMulti(
-          index: '1  من 1',
-          arabicFont: arabicFont,
-          data: data,
-          header: header,
-          printDataPdf: printDataPdf,
-          isEnd: true,
-          totalCont: totalCont.toString(),
-          totalPrice: totalPrice.toString()),
-    );
+    try {
+      pdf.addPage(
+        await dataPageMulti(
+            index: '1  من 1',
+            arabicFont: arabicFont,
+            data: data,
+            header: header,
+            printDataPdf: printDataPdf,
+            isEnd: true,
+            totalCont: totalCont.toString(),
+            totalPrice: totalPrice.toString()),
+      );
+    } catch (e) {}
     // } else if (data.length <= 34) {
     //   pdf.addPage(await dataPageMulti(
     //       index: '1  من 2',
@@ -163,24 +167,26 @@ class PdfApi {
               Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
                 Text('رقم القائمة:$index', style: const TextStyle(fontSize: 8)),
                 Text(printDataPdf.nameSalary,
-                    style: const TextStyle(fontSize: 8)),
+                    style: const TextStyle(fontSize: 7)),
               ]),
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                Text('الخطأ والسهو مرجوع للطرفين',
-                    style: const TextStyle(fontSize: 8)),
-                Text('توقيع . . . . . . .',
-                    style: const TextStyle(fontSize: 8)),
+                Text('     الخطأ والسهو مرجوع للطرفين',
+                    style: const TextStyle(fontSize: 7)),
+                Text('توقيع . . . .', style: const TextStyle(fontSize: 7)),
               ])
             ]),
-        pageFormat: PdfPageFormat(58.0 * PdfPageFormat.mm,
-            (PdfPageFormat.inch * data.length * 3) + 10),
-        orientation: PageOrientation.landscape,
+        pageFormat: PdfPageFormat(52.0 * PdfPageFormat.mm,
+            (PdfPageFormat.mm * data.length * 7) + 100),
+        // orientation: PageOrientation.natural,
         crossAxisAlignment: CrossAxisAlignment.start,
         theme: ThemeData.withFont(
           base: arabicFont,
         ),
         textDirection: TextDirection.rtl,
-        maxPages: 100,
+        maxPages: 1,
+        // header: (context) => Container(
+        //     alignment: Alignment.center,
+        //     child: Text('المبرمج طاهر عباس', textAlign: TextAlign.center)),
         build: (context) => [
               Wrap(children: [
                 // الجدول
@@ -191,28 +197,32 @@ class PdfApi {
                       borderRadius: BorderRadius.circular(4),
                     ),
                     margin: const EdgeInsets.symmetric(vertical: 2),
-                    height: 15,
+                    height: 25,
+                    width: double.infinity,
                     padding: const EdgeInsets.symmetric(horizontal: 2),
-                    child:
-                        Row(verticalDirection: VerticalDirection.up, children: [
-                      Expanded(
-                        child: Container(
-                          child: Text(
-                              'حضرة السيد:${printDataPdf.nameSalary}\n ${printDataPdf.phoneSalary}'),
-                        ),
-                      ),
-                      Expanded(
-                        child: Container(
-                            child: Row(
-                                verticalDirection: VerticalDirection.up,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                              Text(
-                                  'رقم القائمة:${printDataPdf.numberOFInvoice}\n التاريخ:${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}    ${(DateTime.now().minute < 10 ? "0${DateTime.now().minute}" : DateTime.now().minute)}: ${(DateTime.now().hour < 10 ? "0${DateTime.now().hour}" : (DateTime.now().hour < 13 ? DateTime.now().hour : (DateTime.now().hour - 12)))} ${(DateTime.now().hour < 12 ? "ص" : "م")}'),
-                            ])),
-                      )
-                    ]),
+                    child: Column(
+                        // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Expanded(
+                            child: Container(
+                              child: Text(
+                                  '      حضرة السيد/ة :${printDataPdf.nameSalary}\n ${printDataPdf.phoneSalary}',
+                                  style: const TextStyle(fontSize: 8)),
+                            ),
+                          ),
+                          Expanded(
+                            child: Container(
+                                child: Row(
+                                    verticalDirection: VerticalDirection.up,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                  Text(
+                                      '        رقم القائمة:${printDataPdf.numberOFInvoice}    التاريخ:${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}    ${(DateTime.now().minute < 10 ? "0${DateTime.now().minute}" : DateTime.now().minute)}: ${(DateTime.now().hour < 10 ? "0${DateTime.now().hour}" : (DateTime.now().hour < 13 ? DateTime.now().hour : (DateTime.now().hour - 12)))} ${(DateTime.now().hour < 12 ? "ص" : "م")}',
+                                      style: const TextStyle(fontSize: 7)),
+                                ])),
+                          )
+                        ]),
                   ),
                   Table.fromTextArray(
                     data: data,
@@ -239,7 +249,8 @@ class PdfApi {
                           SizedBox(width: 5),
                           Container(
                             height: 12,
-                            child: Text('المجموع: $totalPrice دينار',
+                            child: Text(
+                                'المجموع: ${formatCurrency(totalPrice)} دينار',
                                 style: const TextStyle(fontSize: 8)),
                           )
                         ],
