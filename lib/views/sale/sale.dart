@@ -920,7 +920,7 @@ class Sale extends StatelessWidget {
                     printDataPdf.nameSalary = namePr.text.trim();
                   }
 
-                  final pdfFile = await PdfApi.generateTaple(
+                  await PdfApi.generateTaple(
                       printDataPdf: printDataPdf,
                       user: user,
                       totalPrice: totalPrice,
@@ -931,6 +931,8 @@ class Sale extends StatelessWidget {
                     await Provider.of<DatabaseProvider>(context, listen: false)
                         .deleteAllBasketItems(idBasket);
                   }
+                  namePr.text = "";
+                  Navigator.of(context).pop();
                   Navigator.of(context).pop();
                 },
                 child: const Text('نعم'),

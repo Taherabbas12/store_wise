@@ -36,10 +36,10 @@ class DashBord extends StatelessWidget {
         name: "تقارير",
         url: "ReportScreen",
         image: 'assets/bord_images/klipartz.com (7).png'),
-    DataView(
-        name: "الاعدادات",
-        url: "SettingScreen",
-        image: 'assets/bord_images/klipartz.com (8).png'),
+    // DataView(
+    //     name: "الاعدادات",
+    //     url: "SettingScreen",
+    //     image: 'assets/bord_images/klipartz.com (8).png'),
   ];
 
   @override
