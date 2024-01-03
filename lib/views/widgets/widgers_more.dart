@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:toast/toast.dart';
 
 import '../../constants/colors_cos.dart';
 import '../../model/debt_model.dart';
@@ -155,4 +156,8 @@ Widget buildDataTable2(List<DebtModel> debts, BuildContext context) {
       ),
     ),
   );
+}
+
+void showToast(String msg, {int? duration, int? gravity}) {
+  Toast.show(msg, duration: duration, gravity: gravity);
 }

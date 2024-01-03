@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:provider/provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:toast/toast.dart';
 import 'constants/colors_cos.dart';
 import 'database/database_helper.dart';
 import 'pdf/create_invoice_pdf.dart';
@@ -30,6 +31,7 @@ Future<void> main() async {
 
   GetStorage a = GetStorage(localShard, localShardPath);
   await GetStorage.init(localShard);
+
   // try {
   //   // قراءة قيمة التاريخ المخزنة كنص
   //   String storedDate =

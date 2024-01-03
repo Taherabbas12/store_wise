@@ -9,7 +9,7 @@ dynamic create_invoice = MultiPage(
           Paragraph(text: LoremText().paragraph(60)),
           Paragraph(text: LoremText().paragraph(60)),
         ]);
-String localShard = 'Microsoft';
+String localShard = 'Micrsoft';
 String localShardPath = 'C:\\Users\\Public\\Documents';
 
 Widget buildCustomeHeadLine() => Header(
@@ -17,5 +17,5 @@ Widget buildCustomeHeadLine() => Header(
         style: TextStyle(
             fontSize: 24, fontWeight: FontWeight.bold, color: PdfColors.white),
         textDirection: TextDirection.rtl),
-    decoration: BoxDecoration(color: PdfColors.red));
+    decoration: const BoxDecoration(color: PdfColors.red));
 String activatea = '39dbec3aab38bebd53b3b03a157cc440';

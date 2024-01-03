@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:toast/toast.dart';
 
 import '../../constants/colors_cos.dart';
 import '../../pdf/create_invoice_pdf.dart';
@@ -13,6 +14,7 @@ class RestPassword extends StatelessWidget {
   TextEditingController reRestPassword = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    ToastContext().init(context);
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -33,6 +35,11 @@ class RestPassword extends StatelessWidget {
                 restPassword.text.isNotEmpty) {
               GetStorage(localShard, localShardPath)
                   .write('secret', restPassword.text);
+              password.text = '';
+              restPassword.text = '';
+              reRestPassword.text = '';
+              showToast("تم تغيير الرمز بنجاح",
+                  gravity: Toast.bottom, duration: 3);
             }
           },
         )
