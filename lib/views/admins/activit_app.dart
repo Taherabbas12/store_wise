@@ -51,6 +51,9 @@ class _ActivitAppState extends State<ActivitApp> {
                         .write('token', 'ActiveIsNow2');
                     await GetStorage(localShard, localShardPath)
                         .write('tokenDate', DateTime.now().toString());
+
+                    GetStorage(localShard, localShardPath)
+                        .write('secret', '9876');
                     Navigator.pushReplacementNamed(context, '/');
                   } else {
                     //

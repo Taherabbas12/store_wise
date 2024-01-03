@@ -3,14 +3,19 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:provider/provider.dart';
 import 'package:toast/toast.dart';
 
 import '../constants/colors_cos.dart';
 import '../database/database_helper.dart';
+import '../pdf/create_invoice_pdf.dart';
+import 'widgets/widgers_more.dart';
 
 class DashBord extends StatelessWidget {
   DashBord({super.key});
+  TextEditingController secret = TextEditingController();
+
   List<DataView> views = [
     DataView(
         secret: false,
@@ -38,10 +43,10 @@ class DashBord extends StatelessWidget {
         name: "تقارير",
         url: "ReportScreen",
         image: 'assets/bord_images/klipartz.com (7).png'),
-    // DataView(
-    //     name: "الاعدادات",
-    //     url: "SettingScreen",
-    //     image: 'assets/bord_images/klipartz.com (8).png'),
+    DataView(
+        name: "الاعدادات",
+        url: "SettingScreen",
+        image: 'assets/bord_images/klipartz.com (8).png'),
   ];
 
   @override
@@ -66,7 +71,56 @@ class DashBord extends StatelessWidget {
                 views.length,
                 (index) => InkWell(
                   onTap: () {
-                    Navigator.pushNamed(context, views[index].url);
+                    if (views[index].secret) {
+                      showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                                shape: BeveledRectangleBorder(
+                                    borderRadius: BorderRadius.circular(4)),
+                                title:
+                                    const Text('يرجى ادخال رمز الحمايه اولا'),
+                                actions: [
+                                  textFormField('ادخل رمز الحماية', secret,
+                                      password: true),
+                                  ElevatedButton(
+                                      onPressed: () {
+                                        String sec = GetStorage(
+                                                localShard, localShardPath)
+                                            .read('secret');
+                                        if (secret.text.isNotEmpty &&
+                                            secret.text == sec) {
+                                          Navigator.pop(context);
+                                          Navigator.pushNamed(
+                                              context, views[index].url);
+                                        }
+                                        secret.text = '';
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                          backgroundColor: colorPrimary,
+                                          shape: BeveledRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(4))),
+                                      child: const Text('تحقق',
+                                          style:
+                                              TextStyle(color: Colors.white))),
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                      secret.text = '';
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.red,
+                                        shape: BeveledRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(4))),
+                                    child: const Text('الغاء',
+                                        style: TextStyle(color: Colors.white)),
+                                  )
+                                ],
+                              ));
+                    } else {
+                      Navigator.pushNamed(context, views[index].url);
+                    }
                   },
                   hoverColor: colorHover,
                   borderRadius: BorderRadius.circular(30),

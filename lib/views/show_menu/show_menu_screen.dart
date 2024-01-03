@@ -13,12 +13,7 @@ class ShowMenuScreen extends StatelessWidget {
           color: Colors.white, borderRadius: BorderRadius.circular(15)),
       child: ListView(children: [
         Row(
-          children: [
-            showMenu(
-              context,
-              basketClient,
-            )
-          ],
+          children: [showMenu(context, basketClient)],
         )
       ]),
     );

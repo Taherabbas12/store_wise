@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'add_admin.dart';
 import 'favorites_app.dart';
 import 'managment_admin.dart';
+import 'rest_password.dart';
 
 class SettingScreen extends StatefulWidget {
   SettingScreen({super.key});
@@ -14,9 +15,10 @@ class SettingScreen extends StatefulWidget {
 
 class _SettingScreenState extends State<SettingScreen> {
   List<ListMenue> listMenue = [
-    ListMenue('اضافة حساب', const AddAdmin()),
-    ListMenue('ادارة الحسابات', const ManagmentAdmin()),
-    ListMenue('تفضيلات التطبيق', const FavoritesApp()),
+    ListMenue('الحماية', RestPassword()),
+    // ListMenue('اضافة حساب', const AddAdmin()),
+    // ListMenue('ادارة الحسابات', const ManagmentAdmin()),
+    // ListMenue('تفضيلات التطبيق', const FavoritesApp()),
   ];
 
   int i = 0;

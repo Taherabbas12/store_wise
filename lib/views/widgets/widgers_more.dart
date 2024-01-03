@@ -6,11 +6,12 @@ import '../../constants/colors_cos.dart';
 import '../../model/debt_model.dart';
 
 Widget textFormField(String hint, TextEditingController controller,
-    {double w = 300}) {
+    {double w = 300, bool password = false}) {
   return Container(
     margin: const EdgeInsets.all(5),
     width: w,
     child: TextFormField(
+      obscureText: password,
       controller: controller,
       decoration: InputDecoration(
         border: const OutlineInputBorder(
@@ -34,6 +35,7 @@ Widget textFormFieldNumber(String hint, TextEditingController controller,
   return Container(
     margin: const EdgeInsets.all(5),
     width: w,
+    height: 50,
     child: TextFormField(
         controller: controller,
         inputFormatters: [FilteringTextInputFormatter.digitsOnly],
