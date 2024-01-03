@@ -35,20 +35,46 @@ Widget textFormFieldNumber(String hint, TextEditingController controller,
     margin: const EdgeInsets.all(5),
     width: w,
     child: TextFormField(
+        controller: controller,
+        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+        decoration: InputDecoration(
+          border: const OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.white),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: colorHover),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: colorSelectField),
+          ),
+          labelText: hint,
+        )),
+  );
+}
+
+Widget discountTextFormFieldNumber(
+    String hint, TextEditingController controller,
+    {double w = 300}) {
+  return Container(
+    margin: const EdgeInsets.all(5),
+    width: w,
+    child: TextFormField(
       controller: controller,
       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
       decoration: InputDecoration(
-        border: const OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.white),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: colorHover),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: colorSelectField),
-        ),
-        labelText: hint,
-      ),
+          border: const OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.white),
+          ),
+          enabledBorder: const OutlineInputBorder(
+            borderSide: BorderSide(color: Color.fromARGB(255, 184, 184, 184)),
+          ),
+          focusedBorder: const OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.white),
+          ),
+          labelText: hint,
+          labelStyle:
+              const TextStyle(color: Color.fromARGB(255, 223, 223, 223))),
+      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
     ),
   );
 }

@@ -14,6 +14,7 @@ class SearchActionSheet extends StatefulWidget {
   int idBasket;
   int totalPrice;
   int profits;
+  int discountPrice;
   List<bool> x;
   PrintDataPdfModel printDataPdf;
   SearchActionSheet({
@@ -22,6 +23,7 @@ class SearchActionSheet extends StatefulWidget {
     required this.totalPrice,
     required this.printDataPdf,
     required this.x,
+    required this.discountPrice,
     required this.profits,
   });
   @override
@@ -75,10 +77,15 @@ class _SearchActionSheetState extends State<SearchActionSheet> {
                     clientId: filteredAccounts[i].id,
                     idBasket: widget.idBasket,
                     sequenceModel: SequenceModel(
-                        clientId: filteredAccounts[i].id,
-                        totalPrice: widget.totalPrice,
-                        profits: widget.profits,
-                        updateTimeDebts: DateTime.now()));
+                      clientId: filteredAccounts[i].id,
+                      clientName: filteredAccounts[i].name,
+                      totalPrice: widget.totalPrice,
+                      profits: widget.profits,
+                      updateTimeDebts: DateTime.now(),
+                      discountPrice: widget.discountPrice,
+                      updateTimeDebtsUpdate: '',
+                      status: '',
+                    ));
                 widget.printDataPdf.nameSalary = filteredAccounts[i].name;
                 widget.printDataPdf.numberOFInvoice =
                     widget.idBasket.toString();
@@ -120,6 +127,7 @@ Future<void> addBasketToClient(
     BuildContext context,
     int idBasket,
     int totalPrice,
+    int discountPrice,
     int profits,
     PrintDataPdfModel printDataPdf,
     List<bool> x) async {
@@ -130,6 +138,7 @@ Future<void> addBasketToClient(
           idBasket: idBasket,
           totalPrice: totalPrice,
           printDataPdf: printDataPdf,
+          discountPrice: discountPrice,
           profits: profits,
           x: x);
     },

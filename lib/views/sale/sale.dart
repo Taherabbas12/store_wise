@@ -17,8 +17,11 @@ import '../widgets/widgers_more.dart';
 class Sale extends StatelessWidget {
   late TextEditingController searchController = TextEditingController();
   late TextEditingController qrCodeController = TextEditingController();
+  late TextEditingController discountController =
+      TextEditingController(text: '0');
   late DatabaseProvider databaseProvider;
   int totalPrice = 0;
+  int totalPriceBeforeDiscount = 0;
   int profits = 0;
   int idBasket = 1;
   PrintDataPdfModel printDataPdf = PrintDataPdfModel(
@@ -200,15 +203,28 @@ class Sale extends StatelessWidget {
                       child: SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
                         child: SizedBox(
-                          width: 750,
+                          width: 850,
                           child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
-                                Text(
-                                  'المجموع : ${formatCurrency(totalPrice.toString())}',
-                                  style: const TextStyle(
-                                      fontSize: 25, color: Colors.white),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'المجموع    : ${formatCurrency(totalPrice.toString())}',
+                                      style: const TextStyle(
+                                          fontSize: 20, color: Colors.white),
+                                    ),
+                                    Text(
+                                      'بعد الخصم: ${formatCurrency(totalPriceBeforeDiscount.toString())}',
+                                      style: const TextStyle(
+                                          fontSize: 20, color: Colors.white),
+                                    ),
+                                  ],
                                 ),
+                                discountTextFormFieldNumber(
+                                    'الخصم', discountController,
+                                    w: 100),
                                 ElevatedButton(
                                     style: ElevatedButton.styleFrom(
                                         fixedSize: const Size(150, 45),
@@ -250,7 +266,8 @@ class Sale extends StatelessWidget {
                                         await addBasketToClient(
                                             context,
                                             idBasket,
-                                            totalPrice,
+                                            totalPriceBeforeDiscount,
+                                            int.parse(discountController.text),
                                             profits,
                                             printDataPdf,
                                             x);
@@ -431,6 +448,7 @@ class Sale extends StatelessWidget {
   Widget buildDataTableBasket(List<BasketModel> baskets, BuildContext context) {
     bool isBlackRow = false; // متغير لتبديل لون الصفوف
     totalPrice = 0;
+    totalPriceBeforeDiscount = 0;
     profits = 0;
     return Expanded(
       child: SingleChildScrollView(
@@ -495,6 +513,12 @@ class Sale extends StatelessWidget {
                               totalPrice += baskets[i].totalPrice;
                               profits += baskets[i].totalPrice -
                                   baskets[i].totalPriceProfits;
+                              if (discountController.text.isNotEmpty) {
+                                totalPriceBeforeDiscount = totalPrice -
+                                    int.parse(discountController.text);
+                              } else {
+                                totalPriceBeforeDiscount = totalPrice;
+                              }
 
                               return DataRow(
                                 color: isBlackRow
@@ -871,6 +895,7 @@ class Sale extends StatelessWidget {
           printDataPdf: printDataPdf,
           user: user,
           totalPrice: totalPrice,
+          totalPriceBeforeDiscount: totalPriceBeforeDiscount,
           totalCont: sumNumber);
       if (isInInvoise) {
         deleteAllBaskets(context, deleteItems: true);
@@ -881,7 +906,8 @@ class Sale extends StatelessWidget {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          TextEditingController namePr = TextEditingController();
+          TextEditingController namePr =
+              TextEditingController(text: 'بيع مباشر');
           return AlertDialog(
             title: const Text('بيع مباشر'),
             content: const Text('هل انت متأكد من بيع القائمة بشكل مباشر؟'),
@@ -905,11 +931,14 @@ class Sale extends StatelessWidget {
                     sumNumber += i.requiredQuantity;
                   }
                   SequenceModel sequenceModel = SequenceModel(
-                    clientId: 0,
-                    profits: profits,
-                    totalPrice: totalPrice,
-                    updateTimeDebts: DateTime.now(),
-                  );
+                      clientId: 0,
+                      profits: profits,
+                      clientName: namePr.text,
+                      totalPrice: totalPriceBeforeDiscount,
+                      updateTimeDebts: DateTime.now(),
+                      discountPrice: int.parse(discountController.text),
+                      status: '',
+                      updateTimeDebtsUpdate: '');
                   await databaseProvider.moveBasketDataToClient(
                     adminId: 1,
                     clientId: 0,
@@ -920,18 +949,20 @@ class Sale extends StatelessWidget {
                     printDataPdf.nameSalary = namePr.text.trim();
                   }
 
-                  await PdfApi.generateTaple(
+                  final pdfFile = await PdfApi.generateTaple(
                       printDataPdf: printDataPdf,
                       user: user,
                       totalPrice: totalPrice,
+                      totalPriceBeforeDiscount: totalPriceBeforeDiscount,
                       totalCont: sumNumber);
-                  // PdfApi.openFile(pdfFile);
+                  PdfApi.openFile(pdfFile);
                   if (isInInvoise) {
                     deleteAllBaskets(context, deleteItems: true);
                     await Provider.of<DatabaseProvider>(context, listen: false)
                         .deleteAllBasketItems(idBasket);
                   }
                   namePr.text = "";
+                  discountController.text = "0";
                   Navigator.of(context).pop();
                   Navigator.of(context).pop();
                 },

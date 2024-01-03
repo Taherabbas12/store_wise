@@ -29,30 +29,28 @@ Future<void> main() async {
   }
 
   GetStorage a = GetStorage(localShard, localShardPath);
-  await GetStorage.init(
-    localShard,
-  );
-  try {
-    // قراءة قيمة التاريخ المخزنة كنص
-    String storedDate =
-        GetStorage(localShard, localShardPath).read('tokenDate');
+  await GetStorage.init(localShard);
+  // try {
+  //   // قراءة قيمة التاريخ المخزنة كنص
+  //   String storedDate =
+  //       GetStorage(localShard, localShardPath).read('tokenDate');
 
-    // تحويل التاريخ المخزن إلى كائن DateTime
-    DateTime storedDateTime = DateTime.parse(storedDate);
+  //   // تحويل التاريخ المخزن إلى كائن DateTime
+  //   DateTime storedDateTime = DateTime.parse(storedDate);
 
-    // حساب فارق الوقت بالدقائق بين التاريخ الحالي والتاريخ المخزن
-    int differenceInMinutes = DateTime.now().difference(storedDateTime).inDays;
+  //   // حساب فارق الوقت بالدقائق بين التاريخ الحالي والتاريخ المخزن
+  //   int differenceInMinutes = DateTime.now().difference(storedDateTime).inDays;
 
-    // إذا كان فارق الوقت أكبر من 1 دقيقة، قم بحذف الرمز
-    if (differenceInMinutes > 7) {
-      GetStorage(localShard, localShardPath).remove('token');
-    }
-    // print('print $v');
-  } catch (e) {
-    // في حالة الخطأ، قم بتعيين قيمة "not Active" للرمز
-    GetStorage(localShard, localShardPath).write('token', 'not Active');
-    // print(GetStorage('tokeeen3').read('token'));
-  }
+  //   // إذا كان فارق الوقت أكبر من 1 دقيقة، قم بحذف الرمز
+  //   // if (differenceInMinutes > 7) {
+  //   //   GetStorage(localShard, localShardPath).remove('token');
+  //   // }
+  //   // print('print $v');
+  // } catch (e) {
+  //   // في حالة الخطأ، قم بتعيين قيمة "not Active" للرمز
+  //   GetStorage(localShard, localShardPath).write('token', 'not Active');
+  //   // print(GetStorage('tokeeen3').read('token'));
+  // }
 
   runApp(
     ChangeNotifierProvider(

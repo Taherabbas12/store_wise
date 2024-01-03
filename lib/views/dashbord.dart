@@ -13,9 +13,11 @@ class DashBord extends StatelessWidget {
   DashBord({super.key});
   List<DataView> views = [
     DataView(
+        secret: false,
         name: "قائمة بيع",
         url: "Sale",
         image: 'assets/bord_images/klipartz.com (1).png'),
+
     // DataView(
     //     name: " قائمة ارجاع بيع",
     //     url: "Sale",
@@ -116,9 +118,11 @@ class DataView {
   String name;
   String url;
   String image;
+  bool secret;
   DataView({
     required this.name,
     required this.url,
     required this.image,
+    this.secret = true,
   });
 }

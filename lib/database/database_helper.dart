@@ -63,9 +63,10 @@ class DatabaseProvider extends ChangeNotifier {
         db.execute(
           'CREATE TABLE basket_client(id INTEGER PRIMARY KEY AUTOINCREMENT,sequenceid INTEGER, nameProduct TEXT, requiredQuantity INTEGER, price INTEGER, totalPrice INTEGER, note TEXT)',
         );
+
         // رقم القائمة
         db.execute(
-          'CREATE TABLE sequence(id INTEGER PRIMARY KEY AUTOINCREMENT,clientId INTEGER,total_price INTEGER,updateTimeDebts TEXT,profits INTEGER)',
+          'CREATE TABLE sequence(id INTEGER PRIMARY KEY AUTOINCREMENT,clientName TEXT,clientId INTEGER,total_price INTEGER,updateTimeDebts TEXT,profits INTEGER,discountPrice INTEGER,updateTimeDebtsUpdate TEXT,status TEXT)',
         );
         // الاحداث
         // db.execute(
@@ -74,6 +75,10 @@ class DatabaseProvider extends ChangeNotifier {
         // الاحداث
         db.execute(
           'CREATE TABLE events(id INTEGER PRIMARY KEY AUTOINCREMENT, adminId INTEGER, eventType TEXT, eventDetails TEXT, time TEXT)',
+        );
+        // الباركود
+        db.execute(
+          'CREATE TABLE barcode_table(id INTEGER PRIMARY KEY AUTOINCREMENT, productsId INTEGER,barcode TEXT)',
         );
 
         print('on Create database');
@@ -85,8 +90,8 @@ class DatabaseProvider extends ChangeNotifier {
     _accounts = await getAllAccounts();
     baskets = await getBasketItems();
     // basketClient = await getBasketClientItems();
-    admins = await getAllAdmins(); // جلب الإداريين
-    events = await getAllEvents(); // جلب الأحداث
+    //admins = await getAllAdmins(); // جلب الإداريين
+    //events = await getAllEvents(); // جلب الأحداث
     sequence = await getAllSequence(); // جلب الأحداث
 
     notifyListeners();
