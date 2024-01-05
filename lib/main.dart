@@ -89,7 +89,7 @@ class MyApp extends StatelessWidget {
         '/': (context) => GetStorage(localShard).read('token') == 'ActiveIsNow2'
             ? DashBord()
             : ActivitApp(),
-        'ViewItems': (context) => const ViewItems(),
+        'ViewItems': (context) => ViewItems(),
         'Sale': (context) => Sale(),
         'Accounnts': (context) => Accounnts(),
         'AddAccount': (context) => AddAccount(),

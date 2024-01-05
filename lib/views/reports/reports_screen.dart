@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import '../../database/database_helper.dart';
 import '../../model/basket_client_model.dart';
 import '../../model/sequence_model.dart';
+import '../edit_sequens/screen_edit_sequens.dart';
 import '../show_menu/show_menu_screen.dart';
 import '../widgets/widgers_more.dart';
 
@@ -295,7 +296,28 @@ class ReportScreen extends StatelessWidget {
                                                             color: colorPrimary,
                                                             child: const Text(
                                                                 'تعديل القائمة'),
-                                                            onPressed: () {}),
+                                                            onPressed:
+                                                                () async {
+//  selectDay[i]
+                                                              List<BasketClientModel>
+                                                                  t =
+                                                                  await databaseProvider
+                                                                      .getBasketClientItems(
+                                                                          selectDay[i]
+                                                                              .id!);
+                                                              Navigator.pop(
+                                                                  context);
+                                                              Navigator.push(
+                                                                  context,
+                                                                  MaterialPageRoute(
+                                                                    builder: (context) => ScreenEditSequens(
+                                                                        sequenceModel:
+                                                                            selectDay[
+                                                                                i],
+                                                                        dataEdit:
+                                                                            t),
+                                                                  ));
+                                                            }),
                                                         Text(
                                                             'حضرة السيد : ${selectDay[i].clientName}',
                                                             style: textStyle2),

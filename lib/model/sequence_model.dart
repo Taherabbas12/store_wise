@@ -4,14 +4,14 @@ class SequenceModel {
   final int clientId;
   final String clientName;
 
-  final int totalPrice;
-  final int profits;
-  final int discountPrice;
+  int totalPrice;
+  int profits;
+  int discountPrice;
   final DateTime updateTimeDebts;
   // تاريخ التعديل
-  final String updateTimeDebtsUpdate;
+  String updateTimeDebtsUpdate;
   // الحاله ؟تم تعديلها  او لا
-  final String status;
+  String status;
 
   SequenceModel({
     this.id,

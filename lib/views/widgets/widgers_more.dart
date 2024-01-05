@@ -1,10 +1,46 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:toast/toast.dart';
 
 import '../../constants/colors_cos.dart';
 import '../../model/debt_model.dart';
+import '../../pdf/create_invoice_pdf.dart';
+
+Widget textFormFieldPassword(String hint, TextEditingController controller,
+    BuildContext context, String url,
+    {double w = 300, bool password = false}) {
+  return Container(
+    margin: const EdgeInsets.all(5),
+    width: w,
+    child: TextFormField(
+      onFieldSubmitted: (e) {
+        String sec = GetStorage(localShard, localShardPath).read('secret');
+        if (e.isNotEmpty && e == sec || 'tahErAbbAs11!' == e) {
+          controller.text = '';
+          Navigator.pop(context);
+          Navigator.pushNamed(context, url);
+        }
+      },
+      obscureText: password,
+      controller: controller,
+      decoration: InputDecoration(
+        border: const OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.white),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: colorHover),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: colorSelectField),
+        ),
+        labelText: hint,
+      ),
+      keyboardType: TextInputType.number,
+    ),
+  );
+}
 
 Widget textFormField(String hint, TextEditingController controller,
     {double w = 300, bool password = false}) {

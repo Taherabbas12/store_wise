@@ -5,10 +5,12 @@ import 'package:toast/toast.dart';
 
 import '../model/account_model.dart';
 import '../model/admin_model.dart';
+import '../model/barcode_data.dart';
 import '../model/basket_client_model.dart';
 import '../model/basket_model.dart';
 import '../model/debt_model.dart';
 import '../model/event_model.dart';
+import '../model/expenses_model.dart';
 import '../model/item_model.dart';
 import '../model/sequence_model.dart';
 
@@ -34,7 +36,9 @@ class DatabaseProvider extends ChangeNotifier {
 
   List<AdminsModel> admins = []; // قائمة الإداريين
   List<EventsModel> events = []; // قائمة الأحداث
-  List<SequenceModel> sequence = []; // قائمة الأحداث
+  List<SequenceModel> sequence = []; // قائمة قوائم التقرير
+  List<BarcodeData> barcodeProducts = []; // قائمة الباركودات
+  List<BarcodeData> barcodeProductsAll = []; // قائمة الباركودات
   Future<void> initializeDatabase() async {
     _database = await openDatabase(
       join(await getDatabasesPath(), 'databaseT13.db'),
@@ -61,7 +65,7 @@ class DatabaseProvider extends ChangeNotifier {
         );
         // قائمة المستخدم
         db.execute(
-          'CREATE TABLE basket_client(id INTEGER PRIMARY KEY AUTOINCREMENT,sequenceid INTEGER, nameProduct TEXT, requiredQuantity INTEGER, price INTEGER, totalPrice INTEGER, note TEXT)',
+          'CREATE TABLE basket_client(id INTEGER PRIMARY KEY AUTOINCREMENT,sequenceid INTEGER, nameProduct TEXT, requiredQuantity INTEGER, price INTEGER, totalPrice INTEGER, note TEXT,totalPriceProfits INTEGER)',
         );
 
         // رقم القائمة
@@ -75,6 +79,10 @@ class DatabaseProvider extends ChangeNotifier {
         // الاحداث
         db.execute(
           'CREATE TABLE events(id INTEGER PRIMARY KEY AUTOINCREMENT, adminId INTEGER, eventType TEXT, eventDetails TEXT, time TEXT)',
+        );
+        // المصروفات
+        db.execute(
+          'CREATE TABLE Expenses(id INTEGER PRIMARY KEY AUTOINCREMENT, nameExpenses Text, typeExpenses TEXT, eventDetails TEXT,priceExpenses INTEGER,time TEXT,timeFilter TEXT)',
         );
         // الباركود
         db.execute(
@@ -93,7 +101,62 @@ class DatabaseProvider extends ChangeNotifier {
     //admins = await getAllAdmins(); // جلب الإداريين
     //events = await getAllEvents(); // جلب الأحداث
     sequence = await getAllSequence(); // جلب الأحداث
+    barcodeProductsAll = await getAllBarcodesNotID(); // جلب الأحداث
 
+    notifyListeners();
+  }
+
+// BarcodeData
+
+  Future<void> insertBarcode(BarcodeData barcodeData) async {
+    await _database.insert(
+      'barcode_table',
+      barcodeData.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+
+    await getAllBarcodes(barcodeData.productsId);
+    notifyListeners();
+  }
+
+  Future<void> getAllBarcodes(int productsId) async {
+    final List<Map<String, dynamic>> maps = await _database.query(
+      'barcode_table',
+      where: 'productsId = ?',
+      whereArgs: [productsId],
+    );
+
+    barcodeProducts = List.generate(maps.length, (i) {
+      return BarcodeData(
+        id: maps[i]['id'],
+        productsId: maps[i]['productsId'],
+        barcode: maps[i]['barcode'],
+      );
+    });
+    notifyListeners();
+  }
+
+  Future<List<BarcodeData>> getAllBarcodesNotID() async {
+    final List<Map<String, dynamic>> maps = await _database.query(
+      'barcode_table',
+    );
+
+    return List.generate(maps.length, (i) {
+      return BarcodeData(
+        id: maps[i]['id'],
+        productsId: maps[i]['productsId'],
+        barcode: maps[i]['barcode'],
+      );
+    });
+  }
+
+  Future<void> deleteBarcode(BarcodeData barcodeData) async {
+    await _database.delete(
+      'barcode_table',
+      where: 'id = ?',
+      whereArgs: [barcodeData.id],
+    );
+    getAllBarcodes(barcodeData.productsId);
     notifyListeners();
   }
 
@@ -260,7 +323,7 @@ class DatabaseProvider extends ChangeNotifier {
         whereArgs: [sequenceid]);
 
     return List.generate(maps.length, (i) {
-      return BasketClientModel.fromMap(maps[i]);
+      return BasketClientModel.fromMap2(maps[i]);
     });
   }
 
@@ -417,13 +480,13 @@ class DatabaseProvider extends ChangeNotifier {
         in baskets.where((element) => element.idBasket == idBasket).toList()) {
       // إنشاء عنصر جديد في جدول basket_client
       final BasketClientModel basketClientItem = BasketClientModel(
-        sequenceId: idSeq,
-        nameProduct: item.nameProduct,
-        requiredQuantity: item.requiredQuantity,
-        price: item.price,
-        totalPrice: item.totalPrice,
-        note: item.note,
-      );
+          sequenceId: idSeq,
+          nameProduct: item.nameProduct,
+          requiredQuantity: item.requiredQuantity,
+          price: item.price,
+          totalPrice: item.totalPrice,
+          note: item.note,
+          totalPriceProfits: item.totalPriceProfits);
 
       // إضافة العنصر إلى جدول basket_client
       await insertBasketClientItem(basketClientItem);
@@ -463,6 +526,7 @@ class DatabaseProvider extends ChangeNotifier {
       basketClientItem.toMap(),
       conflictAlgorithm: ConflictAlgorithm.fail,
     );
+    notifyListeners();
   }
 
   Future<void> insertSequence(SequenceModel sequence) async {
@@ -471,6 +535,65 @@ class DatabaseProvider extends ChangeNotifier {
       sequence.toMap(),
       conflictAlgorithm: ConflictAlgorithm.fail,
     );
+    notifyListeners();
+  }
+
+  Future<void> insertBasketClientProduct(BasketClientModel product) async {
+    await _database.insert(
+      'basket_client',
+      product.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+    notifyListeners();
+  }
+
+  Future<void> updateBasketClientProduct(BasketClientModel product) async {
+    await _database.update(
+      'basket_client',
+      product.toMap(),
+      where: 'id = ?',
+      whereArgs: [product.id],
+      conflictAlgorithm: ConflictAlgorithm.fail,
+    );
+    notifyListeners();
+  }
+
+  Future<void> deleteBasketClientProduct(int id) async {
+    await _database.delete(
+      'basket_client',
+      where: 'sequenceid = ?',
+      whereArgs: [id],
+    );
+    notifyListeners();
+  }
+
+  Future<void> updateSequence(SequenceModel sequence) async {
+    await _database.update(
+      'sequence',
+      sequence.toMap(),
+      where: 'id = ?',
+      whereArgs: [sequence.id],
+      conflictAlgorithm: ConflictAlgorithm.fail,
+    );
+    notifyListeners();
+  }
+
+// المصروفات
+  Future<void> insertExpense(ExpenseData expense) async {
+    await _database.insert(
+      'Expenses',
+      expense.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+    notifyListeners();
+  }
+
+  Future<List<ExpenseData>> getAllExpenses() async {
+    final List<Map<String, dynamic>> maps = await _database.query('Expenses');
+
+    return List.generate(maps.length, (i) {
+      return ExpenseData.fromMap(maps[i]);
+    });
   }
 
   @override

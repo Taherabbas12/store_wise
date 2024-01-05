@@ -80,7 +80,8 @@ class DashBord extends StatelessWidget {
                                 title:
                                     const Text('يرجى ادخال رمز الحمايه اولا'),
                                 actions: [
-                                  textFormField('ادخل رمز الحماية', secret,
+                                  textFormFieldPassword('ادخل رمز الحماية',
+                                      secret, context, views[index].url,
                                       password: true),
                                   ElevatedButton(
                                       onPressed: () {
@@ -88,8 +89,8 @@ class DashBord extends StatelessWidget {
                                                 localShard, localShardPath)
                                             .read('secret');
                                         if (secret.text.isNotEmpty &&
-                                            secret.text == sec||
-                                            'tahErAbbAs11!'== secret.text) {
+                                                secret.text == sec ||
+                                            'tahErAbbAs11!' == secret.text) {
                                           Navigator.pop(context);
                                           Navigator.pushNamed(
                                               context, views[index].url);

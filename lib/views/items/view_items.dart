@@ -1,5 +1,6 @@
 // ignore_for_file: library_private_types_in_public_api
 
+import 'package:Al_Yaqeen/model/barcode_data.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -9,14 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:toast/toast.dart';
 import '../../constants/colors_cos.dart';
 
-class ViewItems extends StatefulWidget {
-  const ViewItems({Key? key}) : super(key: key);
-
-  @override
-  _ViewItemsState createState() => _ViewItemsState();
-}
-
-class _ViewItemsState extends State<ViewItems> {
+class ViewItems extends StatelessWidget {
   late TextEditingController searchController = TextEditingController();
   TextEditingController nameProduct = TextEditingController();
   TextEditingController quantity = TextEditingController();
@@ -24,17 +18,14 @@ class _ViewItemsState extends State<ViewItems> {
   TextEditingController purchasingPrice = TextEditingController();
   TextEditingController description = TextEditingController();
   TextEditingController note = TextEditingController();
+  final FocusNode _searchFieldFocusNode = FocusNode();
+  late TextEditingController qrCodeController = TextEditingController();
+
   late int idLast;
-  late ScrollController _scrollController;
-
-  @override
-  void initState() {
-    super.initState();
-    _scrollController = ScrollController();
-  }
-
+  late DatabaseProvider databaseProvider;
   @override
   Widget build(BuildContext context) {
+    databaseProvider = Provider.of<DatabaseProvider>(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text("اضافة المنتجات"),
@@ -57,12 +48,11 @@ class _ViewItemsState extends State<ViewItems> {
           )
         ],
       ),
-      body: addView(),
+      body: addView(context),
     );
   }
 
-  Widget addView() {
-    final databaseProvider = Provider.of<DatabaseProvider>(context);
+  Widget addView(BuildContext context) {
     idLast = databaseProvider.products.isNotEmpty
         ? databaseProvider.products.lastOrNull!.id
         : 1;
@@ -114,14 +104,13 @@ class _ViewItemsState extends State<ViewItems> {
                     sellingPrice: int.parse(sellingPrice.text),
                   );
                   await databaseProvider.insertProduct(newProduct);
-                  setState(() {
-                    nameProduct.clear();
-                    quantity.clear();
-                    sellingPrice.clear();
-                    purchasingPrice.clear();
-                    description.clear();
-                    note.clear();
-                  });
+
+                  nameProduct.clear();
+                  quantity.clear();
+                  sellingPrice.clear();
+                  purchasingPrice.clear();
+                  description.clear();
+                  note.clear();
                 } else {
                   Toast.show("يجب ان يكون سعر البيع اكثر من سعر الشراء",
                       backgroundColor: Colors.red,
@@ -144,10 +133,12 @@ class _ViewItemsState extends State<ViewItems> {
           ),
           Expanded(
             child: SingleChildScrollView(
-              child: buildDataTable(databaseProvider.products
-                  .where((element) => element.nameProduct
-                      .contains(searchController.text.trim()))
-                  .toList()),
+              child: buildDataTable(
+                  databaseProvider.products
+                      .where((element) => element.nameProduct
+                          .contains(searchController.text.trim()))
+                      .toList(),
+                  context),
             ),
           ),
         ],
@@ -155,7 +146,7 @@ class _ViewItemsState extends State<ViewItems> {
     );
   }
 
-  Widget buildDataTable(List<Product> products) {
+  Widget buildDataTable(List<Product> products, BuildContext context) {
     bool isBlackRow = false; // متغير لتبديل لون الصفوف
 
     return SizedBox(
@@ -190,6 +181,15 @@ class _ViewItemsState extends State<ViewItems> {
                 DataCell(Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    InkWell(
+                      onTap: () async {
+                        databaseProvider.getAllBarcodes(products[i].id);
+                        showAndAddQrCode(context, products[i]);
+                      },
+                      child: const Icon(Icons.qr_code_scanner_sharp,
+                          color: Color.fromARGB(255, 24, 24, 24)),
+                    ),
+                    const SizedBox(width: 8),
                     InkWell(
                       onTap: () {
                         showRowDetailsDialog(context, products[i]);
@@ -308,6 +308,109 @@ class _ViewItemsState extends State<ViewItems> {
                     style: const TextStyle(fontSize: 18)),
                 Text('ملاحظة:\t ${product.note}',
                     style: const TextStyle(fontSize: 18)),
+              ],
+            ),
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('إغلاق'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void showAndAddQrCode(BuildContext context, Product product) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('اضافة باركود للمنتج'),
+          content: SizedBox(
+            height: 400,
+            width: 300,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('اسم المنتج:\t ${product.nameProduct}',
+                    style: const TextStyle(
+                        fontSize: 18, color: Color.fromARGB(255, 22, 87, 80))),
+                Container(
+                  margin: const EdgeInsets.all(5),
+                  width: 290,
+                  height: 50,
+                  child: CupertinoSearchTextField(
+                      focusNode: _searchFieldFocusNode,
+                      backgroundColor: colorPrimary.withOpacity(0.8),
+                      controller: qrCodeController,
+                      placeholder: 'امسح الباركود',
+                      style: const TextStyle(color: Colors.white),
+                      itemColor: Colors.white,
+                      placeholderStyle: const TextStyle(color: Colors.white60),
+                      onSubmitted: (v) async {
+                        if (v.isNotEmpty) {
+                          databaseProvider.insertBarcode(BarcodeData(
+                              id: 0,
+                              productsId: product.id,
+                              barcode: qrCodeController.text));
+                          print("ADD______");
+                        }
+                        qrCodeController.text = '';
+
+                        _searchFieldFocusNode
+                            .requestFocus(); // لتحديد التركيز على الحقل النصي
+                        //         int totalPrice =
+                        //     int.parse(price.text) * int.parse(quantity.text);
+                        // int totalPriceProfits =
+                        //     product.purchasingPrice * int.parse(quantity.text);
+                        // BasketModel newBasket = BasketModel(
+                        //     idBasket: idBasket,
+                        //     id: 0,
+                        //     nameProduct: product.nameProduct,
+                        //     note: note.text,
+                        //     price: int.parse(price.text),
+                        //     requiredQuantity: int.parse(quantity.text),
+                        //     totalPriceProfits: totalPriceProfits,
+                        //     totalPrice: totalPrice);
+
+                        // product.quantity -= int.parse(quantity.text);
+
+                        // databaseProvider.updateProduct(product);
+
+                        // databaseProvider.insertBasketItem(newBasket);
+                      }),
+                ),
+                Expanded(
+                  child: StreamBuilder(
+                      stream: Stream.periodic(
+                          const Duration(milliseconds: 200), (v) => {}),
+                      builder: (context, snapshot) {
+                        return ListView.builder(
+                          itemCount: databaseProvider.barcodeProducts.length,
+                          itemBuilder: (context, index) => ListTile(
+                            leading: Text('${index + 1}'),
+                            title: Text(databaseProvider
+                                .barcodeProducts.reversed
+                                .toList()[index]
+                                .barcode),
+                            trailing: IconButton(
+                                onPressed: () {
+                                  databaseProvider.deleteBarcode(
+                                      databaseProvider.barcodeProducts.reversed
+                                          .toList()[index]);
+                                },
+                                icon: const Icon(
+                                  Icons.delete_forever_rounded,
+                                  color: Colors.red,
+                                )),
+                          ),
+                        );
+                      }),
+                )
               ],
             ),
           ),

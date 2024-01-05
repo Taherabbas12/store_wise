@@ -1,12 +1,13 @@
 class BasketClientModel {
   late int id;
 
-  final int sequenceId;
+  int sequenceId;
   final String nameProduct;
-  final int requiredQuantity;
-  final int price;
-  final int totalPrice;
-  final String note;
+  int requiredQuantity;
+  int price;
+  int totalPrice;
+  int totalPriceProfits;
+  String note;
 
   BasketClientModel({
     required this.sequenceId,
@@ -15,6 +16,7 @@ class BasketClientModel {
     required this.price,
     required this.totalPrice,
     required this.note,
+    required this.totalPriceProfits,
   });
 
   factory BasketClientModel.fromMap(Map<String, dynamic> map) {
@@ -25,7 +27,21 @@ class BasketClientModel {
       price: map['price'],
       totalPrice: map['totalPrice'],
       note: map['note'],
+      totalPriceProfits: map['totalPriceProfits'],
     );
+  }
+  factory BasketClientModel.fromMap2(Map<String, dynamic> map) {
+    BasketClientModel t = BasketClientModel(
+      sequenceId: map['sequenceId'] ?? 0,
+      nameProduct: map['nameProduct'],
+      requiredQuantity: map['requiredQuantity'],
+      price: map['price'],
+      totalPrice: map['totalPrice'],
+      note: map['note'],
+      totalPriceProfits: map['totalPriceProfits'],
+    );
+    t.id = map['id'] ?? 0;
+    return t;
   }
 
   Map<String, dynamic> toMap() {
@@ -36,6 +52,7 @@ class BasketClientModel {
       'price': price,
       'totalPrice': totalPrice,
       'note': note,
+      'totalPriceProfits': totalPriceProfits,
     };
   }
 }

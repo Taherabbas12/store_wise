@@ -40,6 +40,15 @@ class RestPassword extends StatelessWidget {
               reRestPassword.text = '';
               showToast("تم تغيير الرمز بنجاح",
                   gravity: Toast.bottom, duration: 3);
+            } else if (restPassword.text.isEmpty || password.text.isEmpty) {
+              showToast("يرجى ملئ كل الحقول",
+                  gravity: Toast.bottom, duration: 3);
+            } else if (restPassword.text == reRestPassword.text) {
+              showToast("الرمز غير متطابق", gravity: Toast.bottom, duration: 3);
+            } else if (GetStorage(localShard, localShardPath).read('secret') !=
+                password.text) {
+              showToast("يرجى التحقق من الرمز القديم",
+                  gravity: Toast.bottom, duration: 3);
             }
           },
         )
