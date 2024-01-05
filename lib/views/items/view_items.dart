@@ -1,4 +1,4 @@
-// ignore_for_file: library_private_types_in_public_api
+// ignore_for_file: library_private_types_in_public_api, must_be_immutable
 
 import 'package:Al_Yaqeen/model/barcode_data.dart';
 import 'package:flutter/cupertino.dart';
@@ -23,6 +23,9 @@ class ViewItems extends StatelessWidget {
 
   late int idLast;
   late DatabaseProvider databaseProvider;
+  List<int> sizeExpandedTable = [5, 3, 8, 4, 4, 3, 4, 4];
+
+  ViewItems({super.key});
   @override
   Widget build(BuildContext context) {
     databaseProvider = Provider.of<DatabaseProvider>(context);
@@ -70,7 +73,7 @@ class ViewItems extends StatelessWidget {
                 textFormFieldNumber('الكمية المتوفرة', quantity),
                 textFormFieldNumber('سعر البيع', sellingPrice),
                 textFormFieldNumber('سعر الشراء', purchasingPrice),
-                textFormField('الباركود', description),
+                textFormField('الوصف', description),
                 textFormField('ملاحظة', note),
               ],
             ),
@@ -132,97 +135,133 @@ class ViewItems extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: SingleChildScrollView(
-              child: buildDataTable(
-                  databaseProvider.products
-                      .where((element) => element.nameProduct
-                          .contains(searchController.text.trim()))
-                      .toList(),
-                  context),
-            ),
+            child: buildDataTable(
+                databaseProvider.products
+                    .where((element) => element.nameProduct
+                        .contains(searchController.text.trim()))
+                    .toList(),
+                context),
           ),
         ],
       ),
     );
   }
 
+  Widget textHd(t, int i) {
+    return Expanded(
+        flex: sizeExpandedTable[i],
+        child: Text(
+          t,
+          style: textStyle2.copyWith(color: Colors.white),
+        ));
+  }
+
+  Widget textBody(t, int i, {TextStyle textStyle1 = textStyle1}) {
+    return Expanded(
+        flex: sizeExpandedTable[i],
+        child: Text(
+          t,
+          style: textStyle1,
+        ));
+  }
+
   Widget buildDataTable(List<Product> products, BuildContext context) {
-    bool isBlackRow = false; // متغير لتبديل لون الصفوف
-
     return SizedBox(
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: DataTable(
-          columnSpacing: MediaQuery.sizeOf(context).width * 0.08,
-          columns: const [
-            DataColumn(label: Text('')),
-            DataColumn(label: Text('ت')),
-            DataColumn(label: Text('اسم المنتج')),
-            DataColumn(label: Text('الكمية المتوفرة')),
-            DataColumn(label: Text('سعر البيع')),
-            DataColumn(label: Text('سعر الشراء')),
-            DataColumn(label: Text('الباركود')),
-            DataColumn(label: Text('ملاحظة')),
-          ],
-          rows: List.generate(products.length, (i) {
-            isBlackRow = !isBlackRow; // تبديل قيمة متغير اللون
-
-            return DataRow(
-              color: isBlackRow
-                  ? MaterialStateColor.resolveWith((_) =>
-                      products[i].quantity > 10
-                          ? Colors.grey.shade300
-                          : Colors.red.shade200)
-                  : MaterialStateColor.resolveWith((_) =>
-                      products[i].quantity > 10
-                          ? Colors.white
-                          : Colors.red.shade200),
-              cells: [
-                DataCell(Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    InkWell(
-                      onTap: () async {
-                        databaseProvider.getAllBarcodes(products[i].id);
-                        showAndAddQrCode(context, products[i]);
-                      },
-                      child: const Icon(Icons.qr_code_scanner_sharp,
-                          color: Color.fromARGB(255, 24, 24, 24)),
-                    ),
-                    const SizedBox(width: 8),
-                    InkWell(
-                      onTap: () {
-                        showRowDetailsDialog(context, products[i]);
-                      },
-                      child: const Icon(Icons.info, color: Colors.blue),
-                    ),
-                    const SizedBox(width: 8),
-                    InkWell(
-                      onTap: () {
-                        editProduct(context, products[i]);
-                      },
-                      child: const Icon(Icons.update, color: Colors.green),
-                    ),
-                    const SizedBox(width: 8),
-                    InkWell(
-                      onTap: () {
-                        deleteProduct(context, products[i]);
-                      },
-                      child: const Icon(Icons.delete, color: Colors.red),
-                    ),
-                  ],
-                )),
-                DataCell(Text((i + 1).toString())),
-                DataCell(Text(products[i].nameProduct)),
-                DataCell(Text(products[i].quantity.toString())),
-                DataCell(Text(products[i].sellingPrice.toString())),
-                DataCell(Text(products[i].purchasingPrice.toString())),
-                DataCell(Text(products[i].description)),
-                DataCell(Text(products[i].note)),
+      child: Column(
+        children: [
+          Container(
+            margin: const EdgeInsets.symmetric(vertical: 7),
+            padding: const EdgeInsets.symmetric(vertical: 7),
+            // height: 40,
+            color: colorPrimary.withOpacity(0.8),
+            child: Row(
+              children: [
+                textHd('', 0),
+                textHd('ت', 1),
+                textHd('اسم المنتج', 2),
+                textHd('الكمية المتوفرة', 3),
+                textHd('سعر البيع', 4),
+                textHd('سعر الشراء', 5),
+                textHd('الوصف', 6),
+                textHd('ملاحظة', 7),
               ],
-            );
-          }),
-        ),
+            ),
+          ),
+          Expanded(
+            flex: 10,
+            child: ListView.separated(
+              separatorBuilder: (context, index) => const Divider(
+                color: Color.fromARGB(255, 129, 129, 129),
+                thickness: 0.8,
+                height: 0,
+              ),
+              itemCount: products.length,
+              itemBuilder: (context, index) => Container(
+                color: products[index].quantity < 5
+                    ? const Color.fromARGB(255, 251, 164, 158)
+                    : index.isEven
+                        ? Colors.white
+                        : Colors.grey.shade300,
+                padding: const EdgeInsets.symmetric(vertical: 7),
+                child: Row(children: [
+                  Expanded(
+                    flex: sizeExpandedTable[0],
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          InkWell(
+                            onTap: () async {
+                              databaseProvider
+                                  .getAllBarcodes(products[index].id);
+                              showAndAddQrCode(context, products[index]);
+                            },
+                            child: const Icon(Icons.qr_code_scanner_sharp,
+                                color: Color.fromARGB(255, 24, 24, 24)),
+                          ),
+                          const SizedBox(width: 8),
+                          InkWell(
+                            onTap: () {
+                              showRowDetailsDialog(context, products[index]);
+                            },
+                            child: const Icon(Icons.info, color: Colors.blue),
+                          ),
+                          const SizedBox(width: 8),
+                          InkWell(
+                            onTap: () {
+                              editProduct(context, products[index]);
+                            },
+                            child:
+                                const Icon(Icons.update, color: Colors.green),
+                          ),
+                          const SizedBox(width: 8),
+                          InkWell(
+                            onTap: () {
+                              deleteProduct(context, products[index]);
+                            },
+                            child: const Icon(Icons.delete, color: Colors.red),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  textBody((index + 1).toString(), 1),
+                  textBody(products[index].nameProduct, 2),
+                  textBody(products[index].quantity.toString(), 3),
+                  textBody(products[index].sellingPrice.toString(), 4,
+                      textStyle1: textStyle1.copyWith(
+                          color: const Color.fromARGB(255, 98, 11, 180))),
+                  textBody(products[index].purchasingPrice.toString(), 5,
+                      textStyle1: textStyle1.copyWith(
+                          color: const Color.fromARGB(255, 11, 180, 53))),
+                  textBody(products[index].description, 6),
+                  textBody(products[index].note, 7),
+                ]),
+              ),
+            ),
+          )
+        ],
       ),
     );
   }

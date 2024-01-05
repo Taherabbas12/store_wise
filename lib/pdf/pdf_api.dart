@@ -94,6 +94,16 @@ class PdfApi {
   }) async {
     var v = await getImageBytes();
     return MultiPage(
+      header: (context) => Center(
+        child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+          Text('بوتيك غوتشي'),
+          Text('07809655038'),
+          Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+            Text('gucci__2015'),
+            Text('inst :'),
+          ])
+        ]),
+      ),
       footer: (context) => Column(children: [
         Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
           Text('رقم القائمة:$index', style: const TextStyle(fontSize: 8)),
@@ -106,7 +116,7 @@ class PdfApi {
         ])
       ]),
       pageFormat: PdfPageFormat(
-          58.0 * PdfPageFormat.mm, PdfPageFormat.mm * data.length * 7 + 140),
+          58.0 * PdfPageFormat.mm, PdfPageFormat.mm * data.length * 7 + 180),
       crossAxisAlignment: CrossAxisAlignment.start,
       theme: ThemeData.withFont(
         base: arabicFont,

@@ -101,7 +101,12 @@ class ScreenEditSequens extends StatelessWidget {
                         onSubmitted: (v) async {
                           try {
                             Product item = products
-                                .where((element) => element.description == v)
+                                .where((element) =>
+                                    databaseProvider.barcodeProductsAll
+                                        .where((e) => e.barcode == v)
+                                        .first
+                                        .productsId ==
+                                    element.id)
                                 .first;
 
                             item.quantity--;

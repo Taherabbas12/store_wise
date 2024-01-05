@@ -19,6 +19,8 @@ class ReportScreen extends StatelessWidget {
     return '${updateTimeDebts.day}/${updateTimeDebts.month}/${updateTimeDebts.year}';
   }
 
+  TextEditingController searchController = TextEditingController();
+
   Set<SetDate> dateT(DatabaseProvider databaseProvider) {
     List<SetDate> date = [];
 
@@ -47,14 +49,35 @@ class ReportScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('تقارير'),
-        actions: const [
+        actions: [
           // وضع خيارات هتا لعرض جدول بياني
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                width: 400,
+                height: 50,
+                child: CupertinoSearchTextField(
+                  controller: searchController,
+                  placeholder: 'بحث عن حساب',
+                  style: const TextStyle(color: Colors.white),
+                  itemColor: Colors.white,
+                  placeholderStyle: const TextStyle(color: Colors.white60),
+                ),
+              )
+            ],
+          )
         ],
       ),
       body: Container(
         alignment: Alignment.topCenter,
         child: buildDataTable(
-            databaseProvider.sequence, context, databaseProvider),
+            databaseProvider.sequence
+                .where((element) =>
+                    element.clientName.contains(searchController.text))
+                .toList(),
+            context,
+            databaseProvider),
       ),
     );
   }
