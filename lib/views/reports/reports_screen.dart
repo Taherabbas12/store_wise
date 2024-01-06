@@ -290,8 +290,22 @@ class ReportScreen extends StatelessWidget {
                                       // }
                                       DateTime storedDate =
                                           selectDay[i].updateTimeDebts;
+
                                       String timeDifference =
                                           calculateTimeDifference(storedDate);
+                                      DateTime storedDate2;
+                                      String storedDate2S = '';
+                                      String timeDifference2 = '';
+                                      try {
+                                        storedDate2 = DateTime.parse(
+                                            selectDay[i].updateTimeDebtsUpdate);
+                                        timeDifference2 =
+                                            calculateTimeDifference(
+                                                DateTime.parse(selectDay[i]
+                                                    .updateTimeDebtsUpdate));
+                                        storedDate2S =
+                                            '${storedDate2.day}/${storedDate2.month}/${storedDate2.year}\n منذ:$timeDifference2';
+                                      } catch (e) {}
                                       return GestureDetector(
                                         onTap: () async {
                                           List<BasketClientModel> basketClient =
@@ -433,9 +447,7 @@ class ReportScreen extends StatelessWidget {
                                                       style: textStyle1)),
                                               Expanded(
                                                   flex: sizeExpandedTable[5],
-                                                  child: Text(
-                                                      selectDay[i]
-                                                          .updateTimeDebtsUpdate,
+                                                  child: Text(storedDate2S,
                                                       textAlign:
                                                           TextAlign.start,
                                                       style: textStyle1)),

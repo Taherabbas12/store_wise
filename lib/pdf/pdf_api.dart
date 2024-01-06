@@ -76,8 +76,8 @@ class PdfApi {
     return saveDocument(name: 'invoice.pdf', pdf: pdf);
   }
 
-  static Future<Uint8List> getImageBytes() async {
-    final ByteData data = await rootBundle.load('assets/logo_car/LOGO1.png');
+  static Future<Uint8List> getImageBytes(int i) async {
+    final ByteData data = await rootBundle.load('assets/Icons ($i).png');
     return data.buffer.asUint8List();
   }
 
@@ -92,18 +92,27 @@ class PdfApi {
     String totalCont = '',
     bool isEnd = false,
   }) async {
-    var v = await getImageBytes();
+    var v1 = await getImageBytes(1);
+    var v2 = await getImageBytes(2);
     return MultiPage(
       header: (context) => Center(
+          child: Container(
+        height: 55,
         child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-          Text('بوتيك غوتشي'),
-          Text('07809655038'),
-          Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-            Text('gucci__2015'),
-            Text('inst :'),
-          ])
+          Text('بوتيك غوتشي', style: const TextStyle(fontSize: 17)),
+          Text('07809655038', style: const TextStyle(fontSize: 8)),
+          Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Text('gucci__2015', style: const TextStyle(fontSize: 8)),
+            Image(MemoryImage(v1), height: 10),
+            SizedBox(width: 15),
+            Text('بوتيك غوتشي 2', style: const TextStyle(fontSize: 8)),
+            Image(MemoryImage(v2), height: 10),
+          ]),
+          // Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+
+          // ]),
         ]),
-      ),
+      )),
       footer: (context) => Column(children: [
         Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
           Text('رقم القائمة:$index', style: const TextStyle(fontSize: 8)),

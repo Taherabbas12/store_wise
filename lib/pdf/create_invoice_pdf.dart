@@ -9,7 +9,7 @@ dynamic create_invoice = MultiPage(
           Paragraph(text: LoremText().paragraph(60)),
           Paragraph(text: LoremText().paragraph(60)),
         ]);
-String localShard = 'Micrsoft';
+String localShard = 'Microsoft';
 String localShardPath = 'C:\\Users\\Public\\Documents';
 
 Widget buildCustomeHeadLine() => Header(

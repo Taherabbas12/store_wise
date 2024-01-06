@@ -237,6 +237,8 @@ class ScreenEditSequens extends StatelessWidget {
                                             discountController.text = '0';
                                           }
                                           sequenceModel.status = 'معدله';
+                                          sequenceModel.updateTimeDebtsUpdate =
+                                              DateTime.now().toString();
                                           sequenceModel.totalPrice =
                                               totalPrice -
                                                   int.parse(
