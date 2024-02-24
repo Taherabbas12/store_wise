@@ -1,16 +1,16 @@
-# store_wise
-
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+The program can be run via
+Executing all things
+When you install the application
+It asks you for a code
+Password :  rehatsabba
+When entering the application
+Most interfaces have a password: 9876
+There you can manage products and sales
+Adding a barcode
+Adding a customer account
+And sales management
+And reports
+Daily and total inventory
+For sales
+And follow up on the amount of items sold
+Debts and financial accounts
